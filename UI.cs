@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Player;
 using static TribeClasses.LevelsSystemTree;
 using static TribeClasses.LevelsSystemTree.Bonuses;
 using static TribeClasses.Plugin;
-using static Player;
 using static UnityEngine.Object;
 
 namespace TribeClasses
@@ -42,7 +42,7 @@ namespace TribeClasses
         private Text attackSpeedAll;
         private Text attackSpeedSpell;
         private Text attackSpeedMele;
-        private Text attackSpeedBow;
+        private Text bowReloadTime;
         private Text damageModAll;
         private Text damageModMele;
         private Text damageModBow;
@@ -83,7 +83,11 @@ namespace TribeClasses
 
         public void Init()
         {
-            if (menu) return;
+            if (menu)
+            {
+                return;
+            }
+
             menu = PrefabManager.RegisterPrefab(_self.assetBundle, "_JF_CLassMenu");
             menu = Instantiate(menu);
             DontDestroyOnLoad(menu);
@@ -111,7 +115,7 @@ namespace TribeClasses
             attackSpeedAll = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedAll").Find("levelbar").gameObject.GetComponent<Text>();
             attackSpeedSpell = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedSpell").Find("levelbar").gameObject.GetComponent<Text>();
             attackSpeedMele = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedMele").Find("levelbar").gameObject.GetComponent<Text>();
-            attackSpeedBow= menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedBow").Find("levelbar").gameObject.GetComponent<Text>();
+            bowReloadTime = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("BowReloadTime").Find("levelbar").gameObject.GetComponent<Text>();
             damageModAll = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModAll").Find("levelbar").gameObject.GetComponent<Text>();
             damageModMele = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModMele").Find("levelbar").gameObject.GetComponent<Text>();
             damageModBow = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModBow").Find("levelbar").gameObject.GetComponent<Text>();
@@ -143,7 +147,7 @@ namespace TribeClasses
             Text attackSpeedAllStatName = attackSpeedAll.transform.parent.Find("name").GetComponent<Text>();
             Text attackSpeedSpellStatName = attackSpeedSpell.transform.parent.Find("name").GetComponent<Text>();
             Text attackSpeedMeleStatName = attackSpeedMele.transform.parent.Find("name").GetComponent<Text>();
-            Text attackSpeedBowStatName = attackSpeedBow.transform.parent.Find("name").GetComponent<Text>();
+            Text attackSpeedBowStatName = bowReloadTime.transform.parent.Find("name").GetComponent<Text>();
             Text damageModAllStatName = damageModAll.transform.parent.Find("name").GetComponent<Text>();
             Text damageModMeleStatName = damageModMele.transform.parent.Find("name").GetComponent<Text>();
             Text damageModBowStatName = damageModBow.transform.parent.Find("name").GetComponent<Text>();
@@ -207,21 +211,40 @@ namespace TribeClasses
 
         public bool IsMenuVisble()
         {
-            if (!menu) return false;
+            if (!menu)
+            {
+                return false;
+            }
+
             return menu.activeInHierarchy;
         }
 
         internal void Update()
         {
-            if (Input.GetKeyDown(LevelSystem.Instance.openMenuKey)) ShowMenu();
-            if (Input.GetKeyDown(LevelSystem.Instance.closeMenuKey)) HideMenu();
+            if (Input.GetKeyDown(LevelSystem.Instance.openMenuKey))
+            {
+                ShowMenu();
+            }
+
+            if (Input.GetKeyDown(LevelSystem.Instance.closeMenuKey))
+            {
+                HideMenu();
+            }
         }
 
         internal void UpdateStats()
         {
-            if (!IsMenuVisble() || !HaveClass()) return;
+            if (!IsMenuVisble() || !HaveClass())
+            {
+                return;
+            }
+
             Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
-            if (bonuses == null) return;
+            if (bonuses == null)
+            {
+                return;
+            }
+
             string className_ = GetClass();
             UpdateClassLogo();
 
@@ -242,10 +265,23 @@ namespace TribeClasses
 
             if (bonuses.unlockSuper)
             {
-                if (currentSuper) Destroy(currentSuper);
-                if (className_ == "guardian") currentSuper = Instantiate(superG, skillParent.transform);
-                else if (className_ == "berserker") currentSuper = Instantiate(superB, skillParent.transform);
-                else if (className_ == "ranger") currentSuper = Instantiate(superR, skillParent.transform);
+                if (currentSuper)
+                {
+                    Destroy(currentSuper);
+                }
+
+                if (className_ == "guardian")
+                {
+                    currentSuper = Instantiate(superG, skillParent.transform);
+                }
+                else if (className_ == "berserker")
+                {
+                    currentSuper = Instantiate(superB, skillParent.transform);
+                }
+                else if (className_ == "ranger")
+                {
+                    currentSuper = Instantiate(superR, skillParent.transform);
+                }
             }
             else
             {
@@ -261,7 +297,11 @@ namespace TribeClasses
             foreach (ModifySkill item in bonuses.m_ModifySkill)
             {
                 Skills.SkillType skillType = SkillTypeFromName(item.skillName);
-                if (skillType == Skills.SkillType.None) continue;
+                if (skillType == Skills.SkillType.None)
+                {
+                    continue;
+                }
+
                 bool flag = true;
                 for (int i = 0; i < skills.Count; i++)
                 {
@@ -283,139 +323,208 @@ namespace TribeClasses
                 }
             }
 
-            if (bonuses.Health == 0) health.transform.parent.gameObject.SetActive(false);
+            if (bonuses.Health == 0)
+            {
+                health.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 health.transform.parent.gameObject.SetActive(true);
                 health.text = $"{bonuses.Health}";
             }
-            if (bonuses.Eitr == 0) eitr.transform.parent.gameObject.SetActive(false);
+            if (bonuses.Eitr == 0)
+            {
+                eitr.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 eitr.transform.parent.gameObject.SetActive(true);
                 eitr.text = $"{bonuses.Health}";
             }
-            if (bonuses.HealthRegeneration == 0) healthRegeneration.transform.parent.gameObject.SetActive(false);
+            if (bonuses.HealthRegeneration == 0)
+            {
+                healthRegeneration.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 healthRegeneration.transform.parent.gameObject.SetActive(true);
                 healthRegeneration.text = $"{bonuses.HealthRegeneration}%";
             }
-            if (bonuses.EitrRegeneration == 0) eitrRegeneration.transform.parent.gameObject.SetActive(false);
+            if (bonuses.EitrRegeneration == 0)
+            {
+                eitrRegeneration.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 eitrRegeneration.transform.parent.gameObject.SetActive(true);
                 eitrRegeneration.text = $"{bonuses.EitrRegeneration}%";
             }
-            if (bonuses.AllAttackSpeed == 0) attackSpeedAll.transform.parent.gameObject.SetActive(false);
+            if (bonuses.AllAttackSpeed == 0)
+            {
+                attackSpeedAll.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 attackSpeedAll.transform.parent.gameObject.SetActive(true);
                 attackSpeedAll.text = $"{bonuses.AllAttackSpeed}%";
             }
-            if (bonuses.MeleAttackSpeed == 0) attackSpeedMele.transform.parent.gameObject.SetActive(false);
+            if (bonuses.MeleAttackSpeed == 0)
+            {
+                attackSpeedMele.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 attackSpeedMele.transform.parent.gameObject.SetActive(true);
                 attackSpeedMele.text = $"{bonuses.MeleAttackSpeed}%";
             }
-            if (bonuses.BowAttackSpeed == 0) attackSpeedBow.transform.parent.gameObject.SetActive(false);
+            if (bonuses.BowReloadTime == 0)
+            {
+                bowReloadTime.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
-                attackSpeedBow.transform.parent.gameObject.SetActive(true);
-                attackSpeedBow.text = $"{bonuses.BowAttackSpeed}%";
+                bowReloadTime.transform.parent.gameObject.SetActive(true);
+                bowReloadTime.text = $"{bonuses.BowReloadTime}%";
             }
-            if (bonuses.SpellAttackSpeed == 0) attackSpeedSpell.transform.parent.gameObject.SetActive(false);
+            if (bonuses.SpellAttackSpeed == 0)
+            {
+                attackSpeedSpell.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 attackSpeedSpell.transform.parent.gameObject.SetActive(true);
                 attackSpeedSpell.text = $"{bonuses.SpellAttackSpeed}%";
             }
-            if (bonuses.Defense == 0) defense.transform.parent.gameObject.SetActive(false);
+            if (bonuses.Defense == 0)
+            {
+                defense.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 defense.transform.parent.gameObject.SetActive(true);
                 defense.text = $"{bonuses.Defense}%";
             }
-            if (bonuses.AllDamageMod == 0) damageModAll.transform.parent.gameObject.SetActive(false);
+            if (bonuses.AllDamageMod == 0)
+            {
+                damageModAll.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 damageModAll.transform.parent.gameObject.SetActive(true);
                 damageModAll.text = $"{bonuses.AllDamageMod}%";
             }
-            if (bonuses.MeleDamageMod == 0) damageModMele.transform.parent.gameObject.SetActive(false);
+            if (bonuses.MeleDamageMod == 0)
+            {
+                damageModMele.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 damageModMele.transform.parent.gameObject.SetActive(true);
                 damageModMele.text = $"{bonuses.MeleDamageMod}%";
             }
-            if (bonuses.BowDamageMod == 0) damageModBow.transform.parent.gameObject.SetActive(false);
+            if (bonuses.BowDamageMod == 0)
+            {
+                damageModBow.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 damageModBow.transform.parent.gameObject.SetActive(true);
                 damageModBow.text = $"{bonuses.BowDamageMod}%";
             }
-            if (bonuses.SpellDamageMod == 0) damageModSpell.transform.parent.gameObject.SetActive(false);
+            if (bonuses.SpellDamageMod == 0)
+            {
+                damageModSpell.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 damageModSpell.transform.parent.gameObject.SetActive(true);
                 damageModSpell.text = $"{bonuses.SpellDamageMod}%";
             }
-            if (bonuses.Stamina == 0) stamina.transform.parent.gameObject.SetActive(false);
+            if (bonuses.Stamina == 0)
+            {
+                stamina.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 stamina.transform.parent.gameObject.SetActive(true);
                 stamina.text = bonuses.Stamina.ToString();
             }
-            if (bonuses.StaminaRegeneration == 0) staminaRegeneration.transform.parent.gameObject.SetActive(false);
+            if (bonuses.StaminaRegeneration == 0)
+            {
+                staminaRegeneration.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 staminaRegeneration.transform.parent.gameObject.SetActive(true);
                 staminaRegeneration.text = $"{bonuses.StaminaRegeneration}%";
             }
-            if (bonuses.Armor == 0) armor.transform.parent.gameObject.SetActive(false);
+            if (bonuses.Armor == 0)
+            {
+                armor.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 armor.transform.parent.gameObject.SetActive(true);
                 armor.text = bonuses.Armor.ToString();
             }
-            if (bonuses.MoveSpeed == 0) moveSpeed.transform.parent.gameObject.SetActive(false);
+            if (bonuses.MoveSpeed == 0)
+            {
+                moveSpeed.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 moveSpeed.transform.parent.gameObject.SetActive(true);
                 moveSpeed.text = $"{bonuses.MoveSpeed}%";
             }
-            if (bonuses.Vampirism == 0) vampirism.transform.parent.gameObject.SetActive(false);
+            if (bonuses.Vampirism == 0)
+            {
+                vampirism.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 vampirism.transform.parent.gameObject.SetActive(true);
                 vampirism.text = bonuses.Vampirism.ToString();
             }
-            if (bonuses.ChanceToNotTakeDmg == 0) chanceToNotTakeDmg.transform.parent.gameObject.SetActive(false);
+            if (bonuses.ChanceToNotTakeDmg == 0)
+            {
+                chanceToNotTakeDmg.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 chanceToNotTakeDmg.transform.parent.gameObject.SetActive(true);
                 chanceToNotTakeDmg.text = $"{bonuses.ChanceToNotTakeDmg}%";
             }
-            if (bonuses.ChanceToReturnDmg == 0) chanceToReturnDmg.transform.parent.gameObject.SetActive(false);
+            if (bonuses.ChanceToReturnDmg == 0)
+            {
+                chanceToReturnDmg.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 chanceToReturnDmg.transform.parent.gameObject.SetActive(true);
                 chanceToReturnDmg.text = $"{bonuses.ChanceToReturnDmg}%";
             }
-            if (bonuses.ReturnDmg == 0) returnDmg.transform.parent.gameObject.SetActive(false);
+            if (bonuses.ReturnDmg == 0)
+            {
+                returnDmg.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 returnDmg.transform.parent.gameObject.SetActive(true);
                 returnDmg.text = $"{bonuses.ReturnDmg}%";
             }
-            if (bonuses.ChanceToX2Dmg == 0) x2DmgChance.transform.parent.gameObject.SetActive(false);
+            if (bonuses.ChanceToX2Dmg == 0)
+            {
+                x2DmgChance.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 x2DmgChance.transform.parent.gameObject.SetActive(true);
                 x2DmgChance.text = $"{bonuses.ChanceToX2Dmg}%";
             }
-            if (bonuses.MaxCarryWeight == 0) weight.transform.parent.gameObject.SetActive(false);
+            if (bonuses.MaxCarryWeight == 0)
+            {
+                weight.transform.parent.gameObject.SetActive(false);
+            }
             else
             {
                 weight.transform.parent.gameObject.SetActive(true);

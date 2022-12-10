@@ -48,7 +48,7 @@ namespace TribeClasses
                 bonuses.AllAttackSpeed += NewBonuses.AllAttackSpeed * count;
                 bonuses.SpellAttackSpeed += NewBonuses.SpellAttackSpeed * count;
                 bonuses.MeleAttackSpeed += NewBonuses.MeleAttackSpeed * count;
-                bonuses.BowAttackSpeed += NewBonuses.BowAttackSpeed * count;
+                bonuses.BowReloadTime += NewBonuses.BowReloadTime * count;
                 bonuses.AllDamageMod += NewBonuses.AllDamageMod * count;
                 bonuses.MeleDamageMod += NewBonuses.MeleDamageMod * count;
                 bonuses.BowDamageMod += NewBonuses.BowDamageMod * count;
@@ -84,7 +84,7 @@ namespace TribeClasses
             public float AllAttackSpeed = 0;
             public float SpellAttackSpeed = 0;
             public float MeleAttackSpeed = 0;
-            public float BowAttackSpeed = 0;
+            public float BowReloadTime = 0;
             public int MaxCarryWeight = 0;
             public float AllDamageMod = 0;
             public float MeleDamageMod = 0;
@@ -92,6 +92,7 @@ namespace TribeClasses
             public float SpellDamageMod = 0;
             public List<ModifySkill> m_ModifySkill = new();
             public bool unlockSuper = false;
+            public bool NoArrows = false;
 
             [Serializable]
             public class ModifySkill

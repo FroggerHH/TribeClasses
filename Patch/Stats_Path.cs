@@ -222,7 +222,7 @@ namespace TribeClasses
         }
 
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
-        private static void AddAttackSpeedBow(Player __instance)
+        private static void AddBowReloadTime(Player __instance)
         {
             if (__instance != m_localPlayer || !HaveClass())
             {
@@ -245,13 +245,13 @@ namespace TribeClasses
                 return;
             }
 
-            if (bonuses.BowAttackSpeed > 0)
+            if (bonuses.BowReloadTime > 0)
             {
-                __instance.m_animator.speed += __instance.m_animator.speed * bonuses.BowAttackSpeed / 100;
+                m_localPlayer.GetCurrentWeapon().m_shared.m_attack.m_reloadTime *= bonuses.BowReloadTime / 100;
             }
-            else if (bonuses.BowAttackSpeed < 0)
+            else if (bonuses.BowReloadTime < 0)
             {
-                __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.BowAttackSpeed * -1 / 100;
+                m_localPlayer.GetCurrentWeapon().m_shared.m_attack.m_reloadTime /= bonuses.BowReloadTime * -1 / 100;
             }
         }
 
@@ -342,6 +342,31 @@ namespace TribeClasses
                 {
                     staminaMultiplier *= bonuses.StaminaRegeneration * -1 / 100;
                 }
+            }
+        }
+        [HarmonyPatch(typeof(Player), nameof(Player.UpdateWeaponLoading))]
+        private static class NoArrows
+        {
+
+            private static bool Prefix(ItemDrop.ItemData weapon, Player __instance)
+            {
+                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
+                {
+                    return true;
+                }
+
+                if (__instance != null && __instance == m_localPlayer && HaveClass() &&
+                    weapon != null && weapon.m_shared.m_attack.m_requiresReload)
+                {
+                    if (bonuses.NoArrows)
+                    {
+                        __instance.SetWeaponLoaded(null);
+                        return false;
+                    }
+
+                }
+
+                return true;
             }
         }
 

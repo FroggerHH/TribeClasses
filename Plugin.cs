@@ -980,7 +980,7 @@ namespace TribeClasses
                                     level = 100,
                                     bonuses = new()
                                     {
-                                        BowAttackSpeed = 60
+                                        BowReloadTime = 60
                                     }
                                 }
                             },
