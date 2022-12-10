@@ -221,6 +221,40 @@ namespace TribeClasses
             }
         }
 
+        [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
+        private static void AddAttackSpeedBow(Player __instance)
+        {
+            if (__instance != m_localPlayer || !HaveClass())
+            {
+                return;
+            }
+
+            if (!__instance.InAttack())
+            {
+                __instance.m_animator.speed = 1;
+                return;
+            }
+            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
+            {
+                return;
+            }
+
+            SkillType skill = __instance.m_currentAttack.m_weapon.m_shared.m_skillType;
+            if (skill != SkillType.Bows)
+            {
+                return;
+            }
+
+            if (bonuses.BowAttackSpeed > 0)
+            {
+                __instance.m_animator.speed += __instance.m_animator.speed * bonuses.BowAttackSpeed / 100;
+            }
+            else if (bonuses.BowAttackSpeed < 0)
+            {
+                __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.BowAttackSpeed * -1 / 100;
+            }
+        }
+
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ApplyStatusEffectSpeedMods)), HarmonyPostfix]
         private static void AddSpeed(ref float speed, SEMan __instance)
         {

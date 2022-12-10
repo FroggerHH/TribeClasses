@@ -48,6 +48,7 @@ namespace TribeClasses
                 bonuses.AllAttackSpeed += NewBonuses.AllAttackSpeed * count;
                 bonuses.SpellAttackSpeed += NewBonuses.SpellAttackSpeed * count;
                 bonuses.MeleAttackSpeed += NewBonuses.MeleAttackSpeed * count;
+                bonuses.BowAttackSpeed += NewBonuses.BowAttackSpeed * count;
                 bonuses.AllDamageMod += NewBonuses.AllDamageMod * count;
                 bonuses.MeleDamageMod += NewBonuses.MeleDamageMod * count;
                 bonuses.SpellDamageMod += NewBonuses.SpellDamageMod * count;
@@ -84,6 +85,7 @@ namespace TribeClasses
             public float AllAttackSpeed = 0;
             public float SpellAttackSpeed = 0;
             public float MeleAttackSpeed = 0;
+            public float BowAttackSpeed = 0;
             public int MaxCarryWeight = 0;
             public float AllDamageMod = 0;
             public float MeleDamageMod = 0;

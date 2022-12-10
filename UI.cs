@@ -41,6 +41,7 @@ namespace TribeClasses
         private Text attackSpeedAll;
         private Text attackSpeedSpell;
         private Text attackSpeedMele;
+        private Text attackSpeedBow;
         private Text damageModAll;
         private Text damageModMele;
         private Text damageModSpell;
@@ -107,6 +108,7 @@ namespace TribeClasses
             attackSpeedAll = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedAll").Find("levelbar").gameObject.GetComponent<Text>();
             attackSpeedSpell = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedSpell").Find("levelbar").gameObject.GetComponent<Text>();
             attackSpeedMele = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedMele").Find("levelbar").gameObject.GetComponent<Text>();
+            attackSpeedBow= menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedBow").Find("levelbar").gameObject.GetComponent<Text>();
             damageModAll = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModAll").Find("levelbar").gameObject.GetComponent<Text>();
             damageModMele = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModMele").Find("levelbar").gameObject.GetComponent<Text>();
             damageModSpell = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModSpell").Find("levelbar").gameObject.GetComponent<Text>();
@@ -137,6 +139,7 @@ namespace TribeClasses
             Text attackSpeedAllStatName = attackSpeedAll.transform.parent.Find("name").GetComponent<Text>();
             Text attackSpeedSpellStatName = attackSpeedSpell.transform.parent.Find("name").GetComponent<Text>();
             Text attackSpeedMeleStatName = attackSpeedMele.transform.parent.Find("name").GetComponent<Text>();
+            Text attackSpeedBowStatName = attackSpeedBow.transform.parent.Find("name").GetComponent<Text>();
             Text damageModAllStatName = damageModAll.transform.parent.Find("name").GetComponent<Text>();
             Text damageModMeleStatName = damageModMele.transform.parent.Find("name").GetComponent<Text>();
             Text damageModSpellStatName = damageModSpell.transform.parent.Find("name").GetComponent<Text>();
@@ -165,6 +168,7 @@ namespace TribeClasses
             attackSpeedAllStatName.text = Localization.instance.Localize(attackSpeedAllStatName.text);
             attackSpeedSpellStatName.text = Localization.instance.Localize(attackSpeedSpellStatName.text);
             attackSpeedMeleStatName.text = Localization.instance.Localize(attackSpeedMeleStatName.text);
+            attackSpeedBowStatName.text = Localization.instance.Localize(attackSpeedBowStatName.text);
             damageModAllStatName.text = Localization.instance.Localize(damageModAllStatName.text);
             damageModMeleStatName.text = Localization.instance.Localize(damageModMeleStatName.text);
             damageModSpellStatName.text = Localization.instance.Localize(damageModSpellStatName.text);
@@ -308,6 +312,12 @@ namespace TribeClasses
             {
                 attackSpeedMele.transform.parent.gameObject.SetActive(true);
                 attackSpeedMele.text = $"{bonuses.MeleAttackSpeed}%";
+            }
+            if (bonuses.BowAttackSpeed == 0) attackSpeedBow.transform.parent.gameObject.SetActive(false);
+            else
+            {
+                attackSpeedBow.transform.parent.gameObject.SetActive(true);
+                attackSpeedBow.text = $"{bonuses.BowAttackSpeed}%";
             }
             if (bonuses.SpellAttackSpeed == 0) attackSpeedSpell.transform.parent.gameObject.SetActive(false);
             else
