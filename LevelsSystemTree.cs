@@ -28,7 +28,7 @@ namespace TribeClasses
 
             public bool Modify(Bonuses NewBonuses, int count = 1)
             {
-                if (NewBonuses == null || !NewBonuses.enable) return false;
+                if (NewBonuses == null) return false;
 
                 bonuses.Health += NewBonuses.Health * count;
                 bonuses.Eitr += NewBonuses.Eitr * count;
@@ -67,8 +67,6 @@ namespace TribeClasses
         [Serializable]
         public class Bonuses
         {
-            public bool enable = true;
-
             public float Health = 0;
             public float Eitr = 0;
             public float HealthRegeneration = 0;

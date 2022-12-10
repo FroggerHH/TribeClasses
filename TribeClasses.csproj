@@ -176,6 +176,7 @@
   <Target Name="CopyDLL" AfterTargets="ILRepack">
     <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\Games\Steam\steamapps\common\Valheim\BepInEx\plugins" />
     <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\Games\Steam\steamapps\common\Valheim dedicated server\BepInEx\plugins" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="Build" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
