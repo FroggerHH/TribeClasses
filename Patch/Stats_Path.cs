@@ -363,7 +363,6 @@ namespace TribeClasses
                         __instance.SetWeaponLoaded(null);
                         return false;
                     }
-
                 }
 
                 return true;
