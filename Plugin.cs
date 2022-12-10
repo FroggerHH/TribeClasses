@@ -900,7 +900,7 @@ namespace TribeClasses
                                     bonuses = new()
                                     {
                                         Defense = -30,
-                                        MeleDamageMod = 20
+                                        BowDamageMod = 20
                                     }
                                 },
                                 new LevelInfo
@@ -924,7 +924,7 @@ namespace TribeClasses
                                     level = 30,
                                     bonuses = new()
                                     {
-                                        SpellDamageMod = 20
+                                        BowDamageMod = 20
                                     }
                                 },
                                 new LevelInfo
@@ -956,7 +956,7 @@ namespace TribeClasses
                                     level = 70,
                                     bonuses = new()
                                     {
-                                        SpellAttackSpeed = 22
+                                        AllAttackSpeed = 22
                                     }
                                 },
                                 new LevelInfo
@@ -980,7 +980,7 @@ namespace TribeClasses
                                     level = 100,
                                     bonuses = new()
                                     {
-                                        SpellAttackSpeed = 50
+                                        BowAttackSpeed = 60
                                     }
                                 }
                             },

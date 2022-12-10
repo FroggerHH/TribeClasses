@@ -12,6 +12,7 @@ namespace TribeClasses
 {
     public class UI
     {
+        #region UIRefs
         public GameObject menu;
         public GameObject noneSkill;
         public GameObject superG;
@@ -44,10 +45,12 @@ namespace TribeClasses
         private Text attackSpeedBow;
         private Text damageModAll;
         private Text damageModMele;
+        private Text damageModBow;
         private Text damageModSpell;
         private Image classLogo;
         internal Image menuBkg;
-
+        #endregion
+        #region values
         private List<SkillObject> skills = new();
         private GameObject currentSuper;
 
@@ -76,7 +79,7 @@ namespace TribeClasses
         internal Sprite berserkerLogo;
         internal Sprite rangerLogo;
         internal Sprite druidLogo;
-
+        #endregion
 
         public void Init()
         {
@@ -111,6 +114,7 @@ namespace TribeClasses
             attackSpeedBow= menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedBow").Find("levelbar").gameObject.GetComponent<Text>();
             damageModAll = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModAll").Find("levelbar").gameObject.GetComponent<Text>();
             damageModMele = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModMele").Find("levelbar").gameObject.GetComponent<Text>();
+            damageModBow = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModBow").Find("levelbar").gameObject.GetComponent<Text>();
             damageModSpell = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModSpell").Find("levelbar").gameObject.GetComponent<Text>();
             noneSkill = menu.transform.Find("Skills").Find("None").gameObject;
             superG = menu.transform.Find("Skills").Find("SuperG").gameObject;
@@ -142,6 +146,7 @@ namespace TribeClasses
             Text attackSpeedBowStatName = attackSpeedBow.transform.parent.Find("name").GetComponent<Text>();
             Text damageModAllStatName = damageModAll.transform.parent.Find("name").GetComponent<Text>();
             Text damageModMeleStatName = damageModMele.transform.parent.Find("name").GetComponent<Text>();
+            Text damageModBowStatName = damageModBow.transform.parent.Find("name").GetComponent<Text>();
             Text damageModSpellStatName = damageModSpell.transform.parent.Find("name").GetComponent<Text>();
             Text closeButtonStatName = closeButton.transform.Find("Text").GetComponent<Text>();
             Text superGName = superG.transform.Find("name").GetComponent<Text>();
@@ -171,6 +176,7 @@ namespace TribeClasses
             attackSpeedBowStatName.text = Localization.instance.Localize(attackSpeedBowStatName.text);
             damageModAllStatName.text = Localization.instance.Localize(damageModAllStatName.text);
             damageModMeleStatName.text = Localization.instance.Localize(damageModMeleStatName.text);
+            damageModBowStatName.text = Localization.instance.Localize(damageModBowStatName.text);
             damageModSpellStatName.text = Localization.instance.Localize(damageModSpellStatName.text);
             healthRegenerationStatName.text = Localization.instance.Localize(healthRegenerationStatName.text);
             superGName.text = Localization.instance.Localize(superGName.text);
@@ -343,6 +349,12 @@ namespace TribeClasses
                 damageModMele.transform.parent.gameObject.SetActive(true);
                 damageModMele.text = $"{bonuses.MeleDamageMod}%";
             }
+            if (bonuses.BowDamageMod == 0) damageModBow.transform.parent.gameObject.SetActive(false);
+            else
+            {
+                damageModBow.transform.parent.gameObject.SetActive(true);
+                damageModBow.text = $"{bonuses.BowDamageMod}%";
+            }
             if (bonuses.SpellDamageMod == 0) damageModSpell.transform.parent.gameObject.SetActive(false);
             else
             {
@@ -421,6 +433,5 @@ namespace TribeClasses
             menu.SetActive(true);
             UpdateStats();
         }
-
     }
 }

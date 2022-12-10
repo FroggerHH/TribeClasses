@@ -51,6 +51,7 @@ namespace TribeClasses
                 bonuses.BowAttackSpeed += NewBonuses.BowAttackSpeed * count;
                 bonuses.AllDamageMod += NewBonuses.AllDamageMod * count;
                 bonuses.MeleDamageMod += NewBonuses.MeleDamageMod * count;
+                bonuses.BowDamageMod += NewBonuses.BowDamageMod * count;
                 bonuses.SpellDamageMod += NewBonuses.SpellDamageMod * count;
                 if (NewBonuses.unlockSuper) bonuses.unlockSuper = true;
 
@@ -89,6 +90,7 @@ namespace TribeClasses
             public int MaxCarryWeight = 0;
             public float AllDamageMod = 0;
             public float MeleDamageMod = 0;
+            public float BowDamageMod = 0;
             public float SpellDamageMod = 0;
             public List<ModifySkill> m_ModifySkill = new();
             public bool unlockSuper = false;

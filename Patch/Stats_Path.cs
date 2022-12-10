@@ -413,7 +413,7 @@ namespace TribeClasses
                 else
                 if (skill == SkillType.Bows)
                 {
-                    damageMod = bonuses.AllDamageMod + bonuses.AllDamageMod;
+                    damageMod = bonuses.BowDamageMod + bonuses.AllDamageMod;
                 }
                 else
                 {
