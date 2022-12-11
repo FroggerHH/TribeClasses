@@ -387,12 +387,12 @@ namespace TribeClasses
             if(eff > 0)
             {
                 eff = Mathf.Min(1, eff / 100f);
-                __result *= 1 + eff;
+                __result *= eff;
             }
             else if(eff < 0)
             {
-                eff = Mathf.Min(1, eff / 100f);
-                __result *= eff;
+                eff *= -1;
+                __result *= 1 + eff;
             }
 
         }
