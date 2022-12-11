@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using static ItemDrop.ItemData.AnimationState;
 using static Player;
@@ -16,12 +17,12 @@ namespace TribeClasses
         [HarmonyPriority(1000)]
         internal static void PlayerStart(Player __instance)
         {
-            if (__instance != m_localPlayer)
+            if(__instance != m_localPlayer)
             {
                 return;
             }
 
-            if (SceneManager.GetActiveScene().name == "main" && HaveClass())
+            if(SceneManager.GetActiveScene().name == "main" && HaveClass())
             {
                 LevelSystem.Instance.Load();
             }
@@ -38,13 +39,13 @@ namespace TribeClasses
         [HarmonyPriority(1000)]
         internal static void PlayerSetMaxEitr(ref float eitr, Player __instance)
         {
-            if (__instance != m_localPlayer)
+            if(__instance != m_localPlayer)
             {
                 return;
             }
 
             Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
-            if (bonuses == null)
+            if(bonuses == null)
             {
                 return;
             }
@@ -56,7 +57,7 @@ namespace TribeClasses
         [HarmonyPatch(typeof(ZNet), nameof(ZNet.RPC_CharacterID)), HarmonyPostfix]
         internal static void SetZDOPeer()
         {
-            foreach (ZNetPeer peer in ZNet.instance.m_peers)
+            foreach(ZNetPeer peer in ZNet.instance.m_peers)
             {
                 ZDOMan.instance.ForceSendZDO(peer.m_characterID);
             }
@@ -67,11 +68,11 @@ namespace TribeClasses
         {
             int random = Random.Range(0, 101);
             #region NotTakeDmg
-            if (__instance.IsPlayer() && __instance == m_localPlayer && HaveClass())
+            if(__instance.IsPlayer() && __instance == m_localPlayer && HaveClass())
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
 
-                if (random < bonuses.ChanceToNotTakeDmg && (DateTime.Now - LevelSystem.Instance.LastNotTakeDmg).TotalSeconds >= 1.0)
+                if(random < bonuses.ChanceToNotTakeDmg && (DateTime.Now - LevelSystem.Instance.LastNotTakeDmg).TotalSeconds >= 1.0)
                 {
                     LevelSystem.Instance.LastNotTakeDmg = DateTime.Now;
                     _self.Debug($"CharacterDeathAndDamage Prefix ChanceToNotTakeDmg");
@@ -81,11 +82,11 @@ namespace TribeClasses
             #endregion
 
             #region Vampirism
-            if (__instance.IsMonsterFaction() && HaveClass())
+            if(__instance.IsMonsterFaction() && HaveClass())
             {
                 Character attacker = hit.GetAttacker();
 
-                if (attacker && attacker.IsPlayer() && m_localPlayer == attacker && HaveClass())
+                if(attacker && attacker.IsPlayer() && m_localPlayer == attacker && HaveClass())
                 {
                     Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
 
@@ -100,7 +101,7 @@ namespace TribeClasses
         [HarmonyPatch(typeof(Player), nameof(Player.GetBodyArmor)), HarmonyPostfix]
         private static void AddArmorANDAplyDefense(ref float __result, Player __instance)
         {
-            if (__instance != m_localPlayer || !HaveClass())
+            if(__instance != m_localPlayer || !HaveClass())
             {
                 return;
             }
@@ -109,11 +110,11 @@ namespace TribeClasses
             __result += bonuses.Armor;
 
             float Defense = bonuses.Defense;
-            if (Defense > 0)
+            if(Defense > 0)
             {
                 __result *= Defense / 100 + 1;
             }
-            else if (Defense < 0)
+            else if(Defense < 0)
             {
                 __result *= Defense * -1 / 100;
             }
@@ -122,26 +123,26 @@ namespace TribeClasses
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedALL(Player __instance)
         {
-            if (__instance != m_localPlayer || !HaveClass())
+            if(__instance != m_localPlayer || !HaveClass())
             {
                 return;
             }
 
-            if (!__instance.InAttack())
+            if(!__instance.InAttack())
             {
                 __instance.m_animator.speed = 1;
                 return;
             }
-            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
+            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
                 _self.DebugError("AddAttackSpeedALL: bonuses == null");
                 return;
             }
-            if (bonuses.AllAttackSpeed > 0)
+            if(bonuses.AllAttackSpeed > 0)
             {
                 __instance.m_animator.speed += __instance.m_animator.speed * bonuses.AllAttackSpeed / 100;
             }
-            else if (bonuses.AllAttackSpeed < 0)
+            else if(bonuses.AllAttackSpeed < 0)
             {
                 __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.AllAttackSpeed * -1 / 100;
             }
@@ -150,32 +151,32 @@ namespace TribeClasses
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedSpell(Player __instance)
         {
-            if (__instance != m_localPlayer || !HaveClass())
+            if(__instance != m_localPlayer || !HaveClass())
             {
                 return;
             }
 
-            if (!__instance.InAttack())
+            if(!__instance.InAttack())
             {
                 __instance.m_animator.speed = 1;
                 return;
             }
-            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
+            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
                 _self.DebugError("SpellAttackSpeed: bonuses == null");
                 return;
             }
 
-            if (__instance.m_currentAttack.m_weapon.m_shared.m_animationState != Staves)
+            if(__instance.m_currentAttack.m_weapon.m_shared.m_animationState != Staves)
             {
                 return;
             }
 
-            if (bonuses.SpellAttackSpeed > 0)
+            if(bonuses.SpellAttackSpeed > 0)
             {
                 __instance.m_animator.speed += __instance.m_animator.speed * bonuses.SpellAttackSpeed / 100;
             }
-            else if (bonuses.SpellAttackSpeed < 0)
+            else if(bonuses.SpellAttackSpeed < 0)
             {
                 __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.SpellAttackSpeed * -1 / 100;
             }
@@ -184,24 +185,24 @@ namespace TribeClasses
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedMele(Player __instance)
         {
-            if (__instance != m_localPlayer || !HaveClass())
+            if(__instance != m_localPlayer || !HaveClass())
             {
                 return;
             }
 
-            if (!__instance.InAttack())
+            if(!__instance.InAttack())
             {
                 __instance.m_animator.speed = 1;
                 return;
             }
-            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
+            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
                 _self.DebugError("SpellAttackSpeed: bonuses == null");
                 return;
             }
 
             SkillType skill = __instance.m_currentAttack.m_weapon.m_shared.m_skillType;
-            if (skill != SkillType.Axes &&
+            if(skill != SkillType.Axes &&
                 skill != SkillType.Swords &&
                 skill != SkillType.Knives &&
                 skill != SkillType.Clubs &&
@@ -211,11 +212,11 @@ namespace TribeClasses
                 return;
             }
 
-            if (bonuses.MeleAttackSpeed > 0)
+            if(bonuses.MeleAttackSpeed > 0)
             {
                 __instance.m_animator.speed += __instance.m_animator.speed * bonuses.MeleAttackSpeed / 100;
             }
-            else if (bonuses.MeleAttackSpeed < 0)
+            else if(bonuses.MeleAttackSpeed < 0)
             {
                 __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.MeleAttackSpeed * -1 / 100;
             }
@@ -224,32 +225,32 @@ namespace TribeClasses
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddBowReloadTime(Player __instance)
         {
-            if (__instance != m_localPlayer || !HaveClass())
+            if(__instance != m_localPlayer || !HaveClass())
             {
                 return;
             }
 
-            if (!__instance.InAttack())
+            if(!__instance.InAttack())
             {
                 __instance.m_animator.speed = 1;
                 return;
             }
-            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
+            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
                 return;
             }
 
             SkillType skill = __instance.m_currentAttack.m_weapon.m_shared.m_skillType;
-            if (skill != SkillType.Bows)
+            if(skill != SkillType.Bows)
             {
                 return;
             }
 
-            if (bonuses.BowReloadTime > 0)
+            if(bonuses.BowReloadTime > 0)
             {
                 m_localPlayer.GetCurrentWeapon().m_shared.m_attack.m_reloadTime *= bonuses.BowReloadTime / 100;
             }
-            else if (bonuses.BowReloadTime < 0)
+            else if(bonuses.BowReloadTime < 0)
             {
                 m_localPlayer.GetCurrentWeapon().m_shared.m_attack.m_reloadTime /= bonuses.BowReloadTime * -1 / 100;
             }
@@ -258,21 +259,42 @@ namespace TribeClasses
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ApplyStatusEffectSpeedMods)), HarmonyPostfix]
         private static void AddSpeed(ref float speed, SEMan __instance)
         {
-            if (__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
             {
                 float baseSpeed = speed;
-                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
-                if (bonuses == null)
+                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
                 {
                     return;
                 }
+                float eff = bonuses.MoveSpeed;
 
-                if (bonuses.MoveSpeed == 0)
+                if(eff > 0)
                 {
-                    return;
+                    eff = Mathf.Min(1, eff / 100f);
+                    if(__instance.m_character.IsSwiming())
+                    {
+                        speed *= 1 + eff * 0.5f;
+                    }
+                    else
+                    {
+                        speed *= 1 + eff * 0.5f;
+                    }
+                }
+                else if(eff < 0)
+                {
+                    eff = Mathf.Min(1, eff / 100f);
+                    if(__instance.m_character.IsSwiming())
+                    {
+
+                        speed *= eff * 0.5f;
+                    }
+                    else
+                    {
+                        speed *= eff;
+                    }
                 }
 
-                if (__instance.m_character.IsSwiming())
+                if(__instance.m_character.IsSwiming())
                 {
                     speed += baseSpeed * bonuses.MoveSpeed / 100f * 0.5f;
                 }
@@ -280,7 +302,7 @@ namespace TribeClasses
                 {
                     speed += baseSpeed * bonuses.MoveSpeed / 100f;
                 }
-                if (speed < 0f)
+                if(speed < 0f)
                 {
                     speed = 0f;
                 }
@@ -290,17 +312,20 @@ namespace TribeClasses
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyHealthRegen)), HarmonyPostfix]
         private static void AddHealthRegen(ref float regenMultiplier, SEMan __instance)
         {
-            if (__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+                float eff = bonuses.HealthRegeneration;
 
-                if (bonuses.HealthRegeneration > 0)
+                if(eff > 0)
                 {
-                    regenMultiplier *= bonuses.HealthRegeneration / 100 + 1;
+                    eff = Mathf.Min(1, eff / 100f);
+                    regenMultiplier *= 1 + eff;
                 }
-                else if (bonuses.HealthRegeneration < 0)
+                else if(eff < 0)
                 {
-                    regenMultiplier *= bonuses.HealthRegeneration * -1 / 100;
+                    eff = Mathf.Min(1, eff / 100f);
+                    regenMultiplier *= eff;
                 }
             }
         }
@@ -308,17 +333,20 @@ namespace TribeClasses
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyEitrRegen)), HarmonyPostfix]
         private static void AddEitrRegen(ref float eitrMultiplier, SEMan __instance)
         {
-            if (__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+                float eff = bonuses.EitrRegeneration;
 
-                if (bonuses.EitrRegeneration > 0)
+                if(eff > 0)
                 {
-                    eitrMultiplier *= bonuses.EitrRegeneration / 100 + 1;
+                    eff = Mathf.Min(1, eff / 100f);
+                    eitrMultiplier *= 1 + eff;
                 }
-                else if (bonuses.EitrRegeneration < 0)
+                else if(eff < 0)
                 {
-                    eitrMultiplier *= bonuses.EitrRegeneration * -1 / 100;
+                    eff = Mathf.Min(1, eff / 100f);
+                    eitrMultiplier *= eff;
                 }
             }
         }
@@ -326,65 +354,66 @@ namespace TribeClasses
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyStaminaRegen)), HarmonyPostfix]
         private static void AddStaminaRegen(ref float staminaMultiplier, SEMan __instance)
         {
-            if (__instance != null && __instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            if(__instance != null && __instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
             {
-                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
-                if (bonuses == null)
+                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
                 {
                     return;
                 }
+                float eff = bonuses.StaminaRegeneration;
 
-                if (bonuses.StaminaRegeneration > 0)
+                if(eff > 0)
                 {
-                    staminaMultiplier *= bonuses.StaminaRegeneration / 100 + 1;
+                    eff = Mathf.Min(1, eff / 100f);
+                    staminaMultiplier *= 1 + eff;
                 }
-                else if (bonuses.StaminaRegeneration < 0)
+                else if(eff < 0)
                 {
-                    staminaMultiplier *= bonuses.StaminaRegeneration * -1 / 100;
+                    eff = Mathf.Min(1, eff / 100f);
+                    staminaMultiplier *= eff;
                 }
             }
         }
-        [HarmonyPatch(typeof(Player), nameof(Player.UpdateWeaponLoading))]
-        private static class NoArrows
+
+        [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetWeaponLoadingTime)), HarmonyPostfix]
+        private static void BowReloadTime(ref float __result)
         {
-
-            private static bool Prefix(ItemDrop.ItemData weapon, Player __instance)
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
-                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
-                {
-                    return true;
-                }
-
-                if (__instance != null && __instance == m_localPlayer && HaveClass() &&
-                    weapon != null && weapon.m_shared.m_attack.m_requiresReload)
-                {
-                    if (bonuses.NoArrows)
-                    {
-                        __instance.SetWeaponLoaded(null);
-                        return false;
-                    }
-                }
-
-                return true;
+                return;
             }
+            float eff = bonuses.BowReloadTime; // например 20, если увеличить, -20, если уменьшить
+
+            if(eff > 0)
+            {
+                eff = Mathf.Min(1, eff / 100f);
+                __result *= 1 + eff;
+            }
+            else if(eff < 0)
+            {
+                eff = Mathf.Min(1, eff / 100f);
+                __result *= eff;
+            }
+
         }
+
 
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifySkillLevel)), HarmonyPrefix]
         private static void ModifySkillLevel(SkillType skill, ref float level, SEMan __instance)
         {
-            if (__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
 
-                foreach (Bonuses.ModifySkill item in bonuses.m_ModifySkill)
+                foreach(Bonuses.ModifySkill item in bonuses.m_ModifySkill)
                 {
                     SkillType skillType = SkillTypeFromName(item.skillName);
-                    if (skillType == SkillType.None)
+                    if(skillType == SkillType.None)
                     {
                         return;
                     }
 
-                    if (skillType == SkillType.All || skillType == skill)
+                    if(skillType == SkillType.All || skillType == skill)
                     {
                         level += item.add;
                     }
@@ -396,19 +425,19 @@ namespace TribeClasses
         private static bool ModifyDamage(HitData hit, Character __instance)
         {
             Character attacker = hit.GetAttacker();
-            if (!attacker)
+            if(!attacker)
             {
                 return true;
             }
 
             #region X2Damage
             int random = Random.Range(0, 101);
-            if (hit.GetAttacker().IsPlayer() && hit.GetAttacker() == m_localPlayer && HaveClass())
+            if(hit.GetAttacker().IsPlayer() && hit.GetAttacker() == m_localPlayer && HaveClass())
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
                 _self.Debug($"ModifyDamage random = {random}");
 
-                if (random < bonuses.ChanceToX2Dmg && (DateTime.Now - LevelSystem.Instance.LastX2Damage).TotalSeconds >= 1.0)
+                if(random < bonuses.ChanceToX2Dmg && (DateTime.Now - LevelSystem.Instance.LastX2Damage).TotalSeconds >= 1.0)
                 {
                     float total = hit.GetTotalDamage();
                     hit.m_damage.Modify(2);
@@ -419,7 +448,7 @@ namespace TribeClasses
                 #region DamageMod
                 float damageMod;
                 SkillType skill = m_localPlayer.GetCurrentWeapon().m_shared.m_skillType;
-                if (skill == SkillType.Axes ||
+                if(skill == SkillType.Axes ||
                     skill == SkillType.Swords ||
                     skill == SkillType.Knives ||
                     skill == SkillType.Clubs ||
@@ -429,13 +458,13 @@ namespace TribeClasses
                     damageMod = bonuses.MeleDamageMod;
                 }
                 else
-                if (skill == SkillType.BloodMagic ||
+                if(skill == SkillType.BloodMagic ||
                     skill == SkillType.ElementalMagic)
                 {
                     damageMod = bonuses.SpellDamageMod + bonuses.AllDamageMod;
                 }
                 else
-                if (skill == SkillType.Bows)
+                if(skill == SkillType.Bows)
                 {
                     damageMod = bonuses.BowDamageMod + bonuses.AllDamageMod;
                 }
@@ -444,13 +473,13 @@ namespace TribeClasses
                     damageMod = bonuses.AllDamageMod;
                 }
 
-                if (damageMod > 0)
+                if(damageMod > 0)
                 {
                     hit.m_damage.Modify(damageMod / 100 + 1);
                 }
-                else if (damageMod < 0)
+                else if(damageMod < 0)
                 {
-                    if (damageMod <= -101)
+                    if(damageMod <= -101)
                     {
                         hit.m_damage.Modify(0);
                     }
@@ -464,11 +493,11 @@ namespace TribeClasses
             #endregion
 
             #region ReturnDmg
-            if (__instance.IsPlayer() && __instance == m_localPlayer && HaveClass())
+            if(__instance.IsPlayer() && __instance == m_localPlayer && HaveClass())
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
 
-                if (random < bonuses.ChanceToReturnDmg && (DateTime.Now - LevelSystem.Instance.LastReturnDmg).TotalSeconds >= 1.0)
+                if(random < bonuses.ChanceToReturnDmg && (DateTime.Now - LevelSystem.Instance.LastReturnDmg).TotalSeconds >= 1.0)
                 {
                     LevelSystem.Instance.LastReturnDmg = DateTime.Now;
                     HitData hit2 = hit.Clone();
