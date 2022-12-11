@@ -54,6 +54,45 @@ namespace TribeClasses
             LevelSystem.Instance.EitrAdded = bonuses.Eitr;
         }
 
+        [HarmonyPatch(typeof(Player), nameof(Player.SetMaxHealth)), HarmonyPrefix]
+        [HarmonyPriority(1000)]
+        internal static void PlayerSetMaxHealth(ref float health, Player __instance)
+        {
+            if(__instance != m_localPlayer)
+            {
+                return;
+            }
+
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+            if(bonuses == null)
+            {
+                return;
+            }
+
+            health += bonuses.Health;
+            LevelSystem.Instance.HPAdded = bonuses.Health;
+        }
+
+
+        [HarmonyPatch(typeof(Player), nameof(Player.SetMaxStamina)), HarmonyPrefix]
+        [HarmonyPriority(1000)]
+        internal static void PlayerSetMaxStamina(ref float stamina, Player __instance)
+        {
+            if(__instance != m_localPlayer)
+            {
+                return;
+            }
+
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+            if(bonuses == null)
+            {
+                return;
+            }
+
+            stamina += bonuses.Stamina;
+            LevelSystem.Instance.staminaAdded = bonuses.Stamina;
+        }
+
         [HarmonyPatch(typeof(ZNet), nameof(ZNet.RPC_CharacterID)), HarmonyPostfix]
         internal static void SetZDOPeer()
         {
@@ -138,20 +177,24 @@ namespace TribeClasses
                 _self.DebugError("AddAttackSpeedALL: bonuses == null");
                 return;
             }
-            if(bonuses.AllAttackSpeed > 0)
+            float eff = bonuses.AllAttackSpeed;
+
+            if(eff > 0)
             {
-                __instance.m_animator.speed += __instance.m_animator.speed * bonuses.AllAttackSpeed / 100;
+                eff = Mathf.Min(1, eff / 100f);
+                __instance.m_animator.speed *= 1 + eff;
             }
-            else if(bonuses.AllAttackSpeed < 0)
+            else if(eff < 0)
             {
-                __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.AllAttackSpeed * -1 / 100;
+                eff = Mathf.Min(0.9f, eff / 100f);
+                __instance.m_animator.speed *= 1 - eff;
             }
         }
 
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedSpell(Player __instance)
         {
-            if(__instance != m_localPlayer || !HaveClass())
+            if(!__instance || __instance != m_localPlayer || !HaveClass())
             {
                 return;
             }
@@ -167,7 +210,7 @@ namespace TribeClasses
                 return;
             }
 
-            if(__instance.m_currentAttack.m_weapon.m_shared.m_animationState != Staves)
+            if(__instance?.m_currentAttack?.m_weapon.m_shared.m_animationState != Staves)
             {
                 return;
             }
@@ -211,48 +254,17 @@ namespace TribeClasses
             {
                 return;
             }
+            float eff = bonuses.MeleAttackSpeed;
 
-            if(bonuses.MeleAttackSpeed > 0)
+            if(eff > 0)
             {
-                __instance.m_animator.speed += __instance.m_animator.speed * bonuses.MeleAttackSpeed / 100;
+                eff = Mathf.Min(1, eff / 100f);
+                __instance.m_animator.speed *= 1 + eff;
             }
-            else if(bonuses.MeleAttackSpeed < 0)
+            else if(eff < 0)
             {
-                __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.MeleAttackSpeed * -1 / 100;
-            }
-        }
-
-        [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
-        private static void AddBowReloadTime(Player __instance)
-        {
-            if(__instance != m_localPlayer || !HaveClass())
-            {
-                return;
-            }
-
-            if(!__instance.InAttack())
-            {
-                __instance.m_animator.speed = 1;
-                return;
-            }
-            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
-            {
-                return;
-            }
-
-            SkillType skill = __instance.m_currentAttack.m_weapon.m_shared.m_skillType;
-            if(skill != SkillType.Bows)
-            {
-                return;
-            }
-
-            if(bonuses.BowReloadTime > 0)
-            {
-                m_localPlayer.GetCurrentWeapon().m_shared.m_attack.m_reloadTime *= bonuses.BowReloadTime / 100;
-            }
-            else if(bonuses.BowReloadTime < 0)
-            {
-                m_localPlayer.GetCurrentWeapon().m_shared.m_attack.m_reloadTime /= bonuses.BowReloadTime * -1 / 100;
+                eff = Mathf.Min(0.9f, eff / 100f);
+                __instance.m_animator.speed *= 1 - eff;
             }
         }
 
@@ -277,30 +289,21 @@ namespace TribeClasses
                     }
                     else
                     {
-                        speed *= 1 + eff * 0.5f;
+                        speed *= 1 + eff;
                     }
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(1, eff / 100f);
+                    eff = Mathf.Min(0.9f, eff / 100f);
                     if(__instance.m_character.IsSwiming())
                     {
 
-                        speed *= eff * 0.5f;
+                        speed *= (1 - eff) * 0.5f;
                     }
                     else
                     {
-                        speed *= eff;
+                        speed *= 1 - eff;
                     }
-                }
-
-                if(__instance.m_character.IsSwiming())
-                {
-                    speed += baseSpeed * bonuses.MoveSpeed / 100f * 0.5f;
-                }
-                else
-                {
-                    speed += baseSpeed * bonuses.MoveSpeed / 100f;
                 }
                 if(speed < 0f)
                 {
@@ -324,8 +327,8 @@ namespace TribeClasses
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(1, eff / 100f);
-                    regenMultiplier *= eff;
+                    eff = Mathf.Min(0.9f, eff / 100f);
+                    regenMultiplier *= 1 - eff;
                 }
             }
         }
@@ -345,8 +348,8 @@ namespace TribeClasses
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(1, eff / 100f);
-                    eitrMultiplier *= eff;
+                    eff = Mathf.Min(0.9f, eff / 100f);
+                    eitrMultiplier *= 1 - eff;
                 }
             }
         }
@@ -369,8 +372,8 @@ namespace TribeClasses
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(1, eff / 100f);
-                    staminaMultiplier *= eff;
+                    eff = Mathf.Min(0.9f, eff / 100f);
+                    staminaMultiplier *= 1 - eff;
                 }
             }
         }
@@ -386,8 +389,8 @@ namespace TribeClasses
 
             if(eff > 0)
             {
-                eff = Mathf.Min(1, eff / 100f);
-                __result *= eff;
+                eff = Mathf.Min(0.9f, eff / 100f);
+                __result *= 1 - eff;
             }
             else if(eff < 0)
             {

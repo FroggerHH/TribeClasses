@@ -473,10 +473,10 @@ namespace TribeClasses
                 return;
             }
 
-            m_localPlayer.m_baseHP += bonuses.Health;
+            /*m_localPlayer.m_baseHP += bonuses.Health;
             HPAdded += bonuses.Health;
             m_localPlayer.m_baseStamina += bonuses.Stamina;
-            staminaAdded += bonuses.Stamina;
+            staminaAdded += bonuses.Stamina;*/
             _self.Debug("Bonuses Loaded");
         }
         internal void UpdateDualWield()
