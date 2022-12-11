@@ -35,6 +35,16 @@ namespace TribeClasses
             __instance.m_nview.Register("ApplySuper", new Action<long, string>(LevelSystem.Instance.RPC_ApplySuper));
         }
 
+        [HarmonyPatch(typeof(ZNet), nameof(ZNet.RPC_CharacterID)), HarmonyPostfix]
+        internal static void SetZDOPeer()
+        {
+            foreach(ZNetPeer peer in ZNet.instance.m_peers)
+            {
+                ZDOMan.instance.ForceSendZDO(peer.m_characterID);
+            }
+        }
+
+        #region Eitr
         [HarmonyPatch(typeof(Player), nameof(Player.SetMaxEitr)), HarmonyPrefix]
         [HarmonyPriority(1000)]
         internal static void PlayerSetMaxEitr(ref float eitr, Player __instance)
@@ -53,7 +63,31 @@ namespace TribeClasses
             eitr += bonuses.Eitr;
             LevelSystem.Instance.EitrAdded = bonuses.Eitr;
         }
+        #endregion
+        #region EitrRegen
+        [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyEitrRegen)), HarmonyPostfix]
+        private static void Add(ref float eitrMultiplier, SEMan __instance)
+        {
+            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            {
+                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+                float eff = bonuses.EitrRegeneration;
 
+                if(eff > 0)
+                {
+                    eff = Mathf.Min(1, eff / 100f);
+                    eitrMultiplier *= 1 + eff;
+                }
+                else if(eff < 0)
+                {
+                    eff = Mathf.Min(0.9f, eff / 100f);
+                    eitrMultiplier *= 1 - eff;
+                }
+            }
+        }
+        #endregion
+
+        #region Health
         [HarmonyPatch(typeof(Player), nameof(Player.SetMaxHealth)), HarmonyPrefix]
         [HarmonyPriority(1000)]
         internal static void PlayerSetMaxHealth(ref float health, Player __instance)
@@ -72,8 +106,31 @@ namespace TribeClasses
             health += bonuses.Health;
             LevelSystem.Instance.HPAdded = bonuses.Health;
         }
+        #endregion
+        #region HealthRegen
+        [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyHealthRegen)), HarmonyPostfix]
+        private static void AddHealthRegen(ref float regenMultiplier, SEMan __instance)
+        {
+            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            {
+                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+                float eff = bonuses.HealthRegeneration;
 
+                if(eff > 0)
+                {
+                    eff = Mathf.Min(1, eff / 100f);
+                    regenMultiplier *= 1 + eff;
+                }
+                else if(eff < 0)
+                {
+                    eff = Mathf.Min(0.9f, eff / 100f);
+                    regenMultiplier *= 1 - eff;
+                }
+            }
+        }
+        #endregion
 
+        #region Stamina
         [HarmonyPatch(typeof(Player), nameof(Player.SetMaxStamina)), HarmonyPrefix]
         [HarmonyPriority(1000)]
         internal static void PlayerSetMaxStamina(ref float stamina, Player __instance)
@@ -92,16 +149,34 @@ namespace TribeClasses
             stamina += bonuses.Stamina;
             LevelSystem.Instance.staminaAdded = bonuses.Stamina;
         }
-
-        [HarmonyPatch(typeof(ZNet), nameof(ZNet.RPC_CharacterID)), HarmonyPostfix]
-        internal static void SetZDOPeer()
+        #endregion
+        #region StaminaRegen
+        [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyStaminaRegen)), HarmonyPostfix]
+        private static void AddStaminaRegen(ref float staminaMultiplier, SEMan __instance)
         {
-            foreach(ZNetPeer peer in ZNet.instance.m_peers)
+            if(__instance != null && __instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
             {
-                ZDOMan.instance.ForceSendZDO(peer.m_characterID);
+                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
+                {
+                    return;
+                }
+                float eff = bonuses.StaminaRegeneration;
+
+                if(eff > 0)
+                {
+                    eff = Mathf.Min(1, eff / 100f);
+                    staminaMultiplier *= 1 + eff;
+                }
+                else if(eff < 0)
+                {
+                    eff = Mathf.Min(0.9f, eff / 100f);
+                    staminaMultiplier *= 1 - eff;
+                }
             }
         }
+        #endregion
 
+        #region Characters
         [HarmonyPatch(typeof(Character), nameof(Character.Damage)), HarmonyPrefix]
         private static bool CharacterDeathAndDamage(HitData hit, Character __instance)
         {
@@ -136,9 +211,11 @@ namespace TribeClasses
 
             return true;
         }
+        #endregion
 
+        #region Armor
         [HarmonyPatch(typeof(Player), nameof(Player.GetBodyArmor)), HarmonyPostfix]
-        private static void AddArmorANDAplyDefense(ref float __result, Player __instance)
+        private static void AddANDAplyDefense(ref float __result, Player __instance)
         {
             if(__instance != m_localPlayer || !HaveClass())
             {
@@ -158,7 +235,9 @@ namespace TribeClasses
                 __result *= Defense * -1 / 100;
             }
         }
+        #endregion
 
+        #region AttackSpeedALL
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedALL(Player __instance)
         {
@@ -190,7 +269,9 @@ namespace TribeClasses
                 __instance.m_animator.speed *= 1 - eff;
             }
         }
+        #endregion
 
+        #region AttackSpeedSpell
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedSpell(Player __instance)
         {
@@ -224,7 +305,9 @@ namespace TribeClasses
                 __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.SpellAttackSpeed * -1 / 100;
             }
         }
+        #endregion
 
+        #region AttackSpeedMele
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedMele(Player __instance)
         {
@@ -267,7 +350,9 @@ namespace TribeClasses
                 __instance.m_animator.speed *= 1 - eff;
             }
         }
+        #endregion
 
+        #region Speed
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ApplyStatusEffectSpeedMods)), HarmonyPostfix]
         private static void AddSpeed(ref float speed, SEMan __instance)
         {
@@ -311,73 +396,9 @@ namespace TribeClasses
                 }
             }
         }
+        #endregion
 
-        [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyHealthRegen)), HarmonyPostfix]
-        private static void AddHealthRegen(ref float regenMultiplier, SEMan __instance)
-        {
-            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
-            {
-                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
-                float eff = bonuses.HealthRegeneration;
-
-                if(eff > 0)
-                {
-                    eff = Mathf.Min(1, eff / 100f);
-                    regenMultiplier *= 1 + eff;
-                }
-                else if(eff < 0)
-                {
-                    eff = Mathf.Min(0.9f, eff / 100f);
-                    regenMultiplier *= 1 - eff;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyEitrRegen)), HarmonyPostfix]
-        private static void AddEitrRegen(ref float eitrMultiplier, SEMan __instance)
-        {
-            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
-            {
-                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
-                float eff = bonuses.EitrRegeneration;
-
-                if(eff > 0)
-                {
-                    eff = Mathf.Min(1, eff / 100f);
-                    eitrMultiplier *= 1 + eff;
-                }
-                else if(eff < 0)
-                {
-                    eff = Mathf.Min(0.9f, eff / 100f);
-                    eitrMultiplier *= 1 - eff;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyStaminaRegen)), HarmonyPostfix]
-        private static void AddStaminaRegen(ref float staminaMultiplier, SEMan __instance)
-        {
-            if(__instance != null && __instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
-            {
-                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
-                {
-                    return;
-                }
-                float eff = bonuses.StaminaRegeneration;
-
-                if(eff > 0)
-                {
-                    eff = Mathf.Min(1, eff / 100f);
-                    staminaMultiplier *= 1 + eff;
-                }
-                else if(eff < 0)
-                {
-                    eff = Mathf.Min(0.9f, eff / 100f);
-                    staminaMultiplier *= 1 - eff;
-                }
-            }
-        }
-
+        #region BowReloadTime
         [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetWeaponLoadingTime)), HarmonyPostfix]
         private static void BowReloadTime(ref float __result)
         {
@@ -399,8 +420,9 @@ namespace TribeClasses
             }
 
         }
+        #endregion
 
-
+        #region Skills
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifySkillLevel)), HarmonyPrefix]
         private static void ModifySkillLevel(SkillType skill, ref float level, SEMan __instance)
         {
@@ -423,7 +445,9 @@ namespace TribeClasses
                 }
             }
         }
+        #endregion
 
+        #region Damage
         [HarmonyPatch(typeof(Character), nameof(Character.Damage)), HarmonyPrefix]
         private static bool ModifyDamage(HitData hit, Character __instance)
         {
@@ -525,5 +549,6 @@ namespace TribeClasses
             return true;
 
         }
+        #endregion
     }
 }
