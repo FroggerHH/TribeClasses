@@ -43,6 +43,7 @@ namespace TribeClasses
         private Text attackSpeedSpell;
         private Text attackSpeedMele;
         private Text bowReloadTime;
+        private Text noAmmo;
         private Text damageModAll;
         private Text damageModMele;
         private Text damageModBow;
@@ -116,6 +117,7 @@ namespace TribeClasses
             attackSpeedSpell = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedSpell").Find("levelbar").gameObject.GetComponent<Text>();
             attackSpeedMele = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("AttackSpeedMele").Find("levelbar").gameObject.GetComponent<Text>();
             bowReloadTime = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("BowReloadTime").Find("levelbar").gameObject.GetComponent<Text>();
+            noAmmo = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("NoAmmo").Find("levelbar").gameObject.GetComponent<Text>();
             damageModAll = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModAll").Find("levelbar").gameObject.GetComponent<Text>();
             damageModMele = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModMele").Find("levelbar").gameObject.GetComponent<Text>();
             damageModBow = menu.transform.Find("Skills").Find("SkillsFrame").Find("Skills").Find("Scroll View").Find("Viewport").Find("Content").Find("DamageModBow").Find("levelbar").gameObject.GetComponent<Text>();
@@ -148,6 +150,7 @@ namespace TribeClasses
             Text attackSpeedSpellStatName = attackSpeedSpell.transform.parent.Find("name").GetComponent<Text>();
             Text attackSpeedMeleStatName = attackSpeedMele.transform.parent.Find("name").GetComponent<Text>();
             Text attackSpeedBowStatName = bowReloadTime.transform.parent.Find("name").GetComponent<Text>();
+            Text noAmmoStatName = noAmmo.transform.parent.Find("name").GetComponent<Text>();
             Text damageModAllStatName = damageModAll.transform.parent.Find("name").GetComponent<Text>();
             Text damageModMeleStatName = damageModMele.transform.parent.Find("name").GetComponent<Text>();
             Text damageModBowStatName = damageModBow.transform.parent.Find("name").GetComponent<Text>();
@@ -178,6 +181,7 @@ namespace TribeClasses
             attackSpeedSpellStatName.text = Localization.instance.Localize(attackSpeedSpellStatName.text);
             attackSpeedMeleStatName.text = Localization.instance.Localize(attackSpeedMeleStatName.text);
             attackSpeedBowStatName.text = Localization.instance.Localize(attackSpeedBowStatName.text);
+            noAmmoStatName.text = Localization.instance.Localize(noAmmoStatName.text);
             damageModAllStatName.text = Localization.instance.Localize(damageModAllStatName.text);
             damageModMeleStatName.text = Localization.instance.Localize(damageModMeleStatName.text);
             damageModBowStatName.text = Localization.instance.Localize(damageModBowStatName.text);
@@ -385,6 +389,14 @@ namespace TribeClasses
             {
                 bowReloadTime.transform.parent.gameObject.SetActive(true);
                 bowReloadTime.text = $"{bonuses.BowReloadTime}%";
+            }
+            if (!bonuses.NoAmmo)
+            {
+                noAmmo.transform.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                noAmmo.transform.parent.gameObject.SetActive(true);
             }
             if (bonuses.SpellAttackSpeed == 0)
             {

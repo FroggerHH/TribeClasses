@@ -109,19 +109,11 @@ namespace TribeClasses
             altarMulti.Name
                 .Russian("Алтарь Древних Героев")
                 .English("Altar of Ancient Heroes")
-                .Spanish("Altar De Los Héroes Antiguos")
-                .German("Altar der alten Helden")
-                .Chinese("古代英雄的祭坛")
-                .Ukrainian("Вівтар Стародавніх Героїв")
                 .Czech("Oltář Starověkých Hrdinů");
             altarMulti.Description
-                .Russian("Используется для получения класса героя.")
-                .English("Used to get the hero class.")
-                .Spanish("Se usa para obtener una clase de héroe.")
-                .German("Wird verwendet, um eine Heldenklasse zu erhalten.")
-                .Chinese("用来获得英雄类。")
-                .Ukrainian("Використовується для отримання класу героя.")
-                .Czech("Používá se k získání třídy hrdiny.");
+                .Russian("Используется для получения классов.")
+                .English("Used to get classes.")
+                .Czech("Používá se k získání tříd.");
             altarMulti.Category.Add(BuildPieceCategory.Crafting);
             altarMulti.SpecialProperties.AdminOnly = true;
             MaterialReplacer.RegisterGameObjectForShaderSwap(altarMulti.Prefab, MaterialReplacer.ShaderType.UseUnityShader);
@@ -130,21 +122,13 @@ namespace TribeClasses
             BuildPiece altarBerserker = new(assetBundle, "_JF_Piece_ClassAltar_Berserker");
             BuildPiece.ConfigurationEnabled = true;
             altarBerserker.Name
-                .Russian("Алтарь Древних Героев")
-                .English("Altar of Ancient Heroes")
-                .Spanish("Altar De Los Héroes Antiguos")
-                .German("Altar der alten Helden")
-                .Chinese("古代英雄的祭坛")
-                .Ukrainian("Вівтар Стародавніх Героїв")
-                .Czech("Oltář Starověkých Hrdinů");
+                .Russian("Алтарь Берсерка")
+                .English("Altar of the Berserker")
+                .Czech("Oltář Berserk");
             altarBerserker.Description
-                .Russian("Используется для получения класса героя.")
-                .English("Used to get the hero class.")
-                .Spanish("Se usa para obtener una clase de héroe.")
-                .German("Wird verwendet, um eine Heldenklasse zu erhalten.")
-                .Chinese("用来获得英雄类。")
-                .Ukrainian("Використовується для отримання класу героя.")
-                .Czech("Používá se k získání třídy hrdiny.");
+                .Russian("Используется для получения класса берсерк.")
+                .English("Used to get the berserk class.")
+                .Czech("Používá se k získání třídy Berserk.");
             altarBerserker.Category.Add(BuildPieceCategory.Crafting);
             altarBerserker.SpecialProperties.AdminOnly = true;
             MaterialReplacer.RegisterGameObjectForShaderSwap(altarBerserker.Prefab, MaterialReplacer.ShaderType.UseUnityShader);
@@ -153,21 +137,13 @@ namespace TribeClasses
             BuildPiece altarDruid = new(assetBundle, "_JF_Piece_ClassAltar_Druid");
             BuildPiece.ConfigurationEnabled = true;
             altarDruid.Name
-                .Russian("Алтарь Древних Героев")
-                .English("Altar of Ancient Heroes")
-                .Spanish("Altar De Los Héroes Antiguos")
-                .German("Altar der alten Helden")
-                .Chinese("古代英雄的祭坛")
-                .Ukrainian("Вівтар Стародавніх Героїв")
-                .Czech("Oltář Starověkých Hrdinů");
+                .Russian("Алтарь Друида")
+                .English("Druid's Altar")
+                .Czech("Druidův Oltář");
             altarDruid.Description
-                .Russian("Используется для получения класса героя.")
-                .English("Used to get the hero class.")
-                .Spanish("Se usa para obtener una clase de héroe.")
-                .German("Wird verwendet, um eine Heldenklasse zu erhalten.")
-                .Chinese("用来获得英雄类。")
-                .Ukrainian("Використовується для отримання класу героя.")
-                .Czech("Používá se k získání třídy hrdiny.");
+                .Russian("Используется для получения класса хранитель Друид.")
+                .English("Used to get the Guardian Druid class.")
+                .Czech("Používá se k získání třídy Guardian Druid.");
             altarDruid.Category.Add(BuildPieceCategory.Crafting);
             altarDruid.SpecialProperties.AdminOnly = true;
             MaterialReplacer.RegisterGameObjectForShaderSwap(altarDruid.Prefab, MaterialReplacer.ShaderType.UseUnityShader);
@@ -176,21 +152,13 @@ namespace TribeClasses
             BuildPiece altarGuardian = new(assetBundle, "_JF_Piece_ClassAltar_Guardian");
             BuildPiece.ConfigurationEnabled = true;
             altarGuardian.Name
-                .Russian("Алтарь Древних Героев")
-                .English("Altar of Ancient Heroes")
-                .Spanish("Altar De Los Héroes Antiguos")
-                .German("Altar der alten Helden")
-                .Chinese("古代英雄的祭坛")
-                .Ukrainian("Вівтар Стародавніх Героїв")
-                .Czech("Oltář Starověkých Hrdinů");
+                .Russian("Алтарь Хранителя")
+                .English("The Guardian's Altar")
+                .Czech("Oltář Strážce");
             altarGuardian.Description
-                .Russian("Используется для получения класса героя.")
-                .English("Used to get the hero class.")
-                .Spanish("Se usa para obtener una clase de héroe.")
-                .German("Wird verwendet, um eine Heldenklasse zu erhalten.")
-                .Chinese("用来获得英雄类。")
-                .Ukrainian("Використовується для отримання класу героя.")
-                .Czech("Používá se k získání třídy hrdiny.");
+                .Russian("Используется для получения класса хранитель.")
+                .English("Used to get the guardian class.")
+                .Czech("Používá se k získání třídy opatrovník.");
             altarGuardian.Category.Add(BuildPieceCategory.Crafting);
             altarGuardian.SpecialProperties.AdminOnly = true;
             MaterialReplacer.RegisterGameObjectForShaderSwap(altarGuardian.Prefab, MaterialReplacer.ShaderType.UseUnityShader);
@@ -199,21 +167,13 @@ namespace TribeClasses
             BuildPiece altarRanger = new(assetBundle, "_JF_Piece_ClassAltar_Ranger");
             BuildPiece.ConfigurationEnabled = true;
             altarRanger.Name
-                .Russian("Алтарь Древних Героев")
-                .English("Altar of Ancient Heroes")
-                .Spanish("Altar De Los Héroes Antiguos")
-                .German("Altar der alten Helden")
-                .Chinese("古代英雄的祭坛")
-                .Ukrainian("Вівтар Стародавніх Героїв")
-                .Czech("Oltář Starověkých Hrdinů");
+                .Russian("Алтарь Рейнджера")
+                .English("Ranger's Altar")
+                .Czech("Oltář Strážce");
             altarRanger.Description
-                .Russian("Используется для получения класса героя.")
-                .English("Used to get the hero class.")
-                .Spanish("Se usa para obtener una clase de héroe.")
-                .German("Wird verwendet, um eine Heldenklasse zu erhalten.")
-                .Chinese("用来获得英雄类。")
-                .Ukrainian("Використовується для отримання класу героя.")
-                .Czech("Používá se k získání třídy hrdiny.");
+                .Russian("Used to get the ranger class.")
+                .English("Используется для получения класса рейнджер.")
+                .Czech("Používá se k získání třídy Ranger.");
             altarRanger.Category.Add(BuildPieceCategory.Crafting);
             altarRanger.SpecialProperties.AdminOnly = true;
             MaterialReplacer.RegisterGameObjectForShaderSwap(altarRanger.Prefab, MaterialReplacer.ShaderType.UseUnityShader);

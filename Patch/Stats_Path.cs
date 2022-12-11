@@ -80,7 +80,7 @@ namespace TribeClasses
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(0.9f, eff / 100f);
+                    eff = eff * -1 / 100f;
                     eitrMultiplier *= 1 - eff;
                 }
             }
@@ -123,7 +123,7 @@ namespace TribeClasses
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(0.9f, eff / 100f);
+                    eff = eff * -1 / 100f;
                     regenMultiplier *= 1 - eff;
                 }
             }
@@ -169,7 +169,7 @@ namespace TribeClasses
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(0.9f, eff / 100f);
+                    eff = eff * -1 / 100f;
                     staminaMultiplier *= 1 - eff;
                 }
             }
@@ -225,14 +225,17 @@ namespace TribeClasses
             Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
             __result += bonuses.Armor;
 
-            float Defense = bonuses.Defense;
-            if(Defense > 0)
+            float eff = bonuses.AllAttackSpeed;
+
+            if(eff > 0)
             {
-                __result *= Defense / 100 + 1;
+                eff = Mathf.Min(1, eff / 100f);
+                __instance.m_animator.speed *= 1 + eff;
             }
-            else if(Defense < 0)
+            else if(eff < 0)
             {
-                __result *= Defense * -1 / 100;
+                eff = eff * -1 / 100f;
+                __instance.m_animator.speed *= 1 - eff;
             }
         }
         #endregion
@@ -265,7 +268,7 @@ namespace TribeClasses
             }
             else if(eff < 0)
             {
-                eff = Mathf.Min(0.9f, eff / 100f);
+                eff = eff * -1 / 100f;
                 __instance.m_animator.speed *= 1 - eff;
             }
         }
@@ -279,7 +282,6 @@ namespace TribeClasses
             {
                 return;
             }
-
             if(!__instance.InAttack())
             {
                 __instance.m_animator.speed = 1;
@@ -290,19 +292,21 @@ namespace TribeClasses
                 _self.DebugError("SpellAttackSpeed: bonuses == null");
                 return;
             }
-
             if(__instance?.m_currentAttack?.m_weapon.m_shared.m_animationState != Staves)
             {
                 return;
             }
 
-            if(bonuses.SpellAttackSpeed > 0)
+            float eff = bonuses.SpellAttackSpeed;
+            if(eff > 0)
             {
-                __instance.m_animator.speed += __instance.m_animator.speed * bonuses.SpellAttackSpeed / 100;
+                eff = Mathf.Min(1, eff / 100f);
+                __instance.m_animator.speed *= 1 + eff;
             }
-            else if(bonuses.SpellAttackSpeed < 0)
+            else if(eff < 0)
             {
-                __instance.m_animator.speed -= __instance.m_animator.speed * bonuses.SpellAttackSpeed * -1 / 100;
+                eff = eff * -1 / 100f;
+                __instance.m_animator.speed *= 1 - eff;
             }
         }
         #endregion
@@ -315,7 +319,6 @@ namespace TribeClasses
             {
                 return;
             }
-
             if(!__instance.InAttack())
             {
                 __instance.m_animator.speed = 1;
@@ -323,7 +326,6 @@ namespace TribeClasses
             }
             Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
-                _self.DebugError("SpellAttackSpeed: bonuses == null");
                 return;
             }
 
@@ -346,7 +348,7 @@ namespace TribeClasses
             }
             else if(eff < 0)
             {
-                eff = Mathf.Min(0.9f, eff / 100f);
+                eff = eff * -1 / 100f;
                 __instance.m_animator.speed *= 1 - eff;
             }
         }
@@ -379,7 +381,7 @@ namespace TribeClasses
                 }
                 else if(eff < 0)
                 {
-                    eff = Mathf.Min(0.9f, eff / 100f);
+                    eff = eff * -1 / 100f;
                     if(__instance.m_character.IsSwiming())
                     {
 
@@ -415,10 +417,25 @@ namespace TribeClasses
             }
             else if(eff < 0)
             {
-                eff *= -1;
+                eff = eff * -1 / 100f;
                 __result *= 1 + eff;
             }
 
+        }
+        #endregion
+
+        #region NoAmmo
+        [HarmonyPatch(typeof(Attack), nameof(Attack.UseAmmo)), HarmonyPostfix]
+        private static void NoAmmo(Attack __instance)
+        {
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
+            {
+                return;
+            }
+            bool flag = bonuses.NoAmmo;
+            if(!flag) return;
+
+            __instance.m_character.m_inventory.AddItem(__instance.m_ammoItem);
         }
         #endregion
 

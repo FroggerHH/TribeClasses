@@ -54,6 +54,7 @@ namespace TribeClasses
                 bonuses.BowDamageMod += NewBonuses.BowDamageMod * count;
                 bonuses.SpellDamageMod += NewBonuses.SpellDamageMod * count;
                 if (NewBonuses.unlockSuper) bonuses.unlockSuper = true;
+                if (NewBonuses.NoAmmo) bonuses.NoAmmo = true;
 
                 if (bonuses.ChanceToNotTakeDmg > 100) bonuses.ChanceToNotTakeDmg = 100;
                 if (bonuses.ChanceToReturnDmg > 100) bonuses.ChanceToReturnDmg = 100;
@@ -92,7 +93,7 @@ namespace TribeClasses
             public float SpellDamageMod = 0;
             public List<ModifySkill> m_ModifySkill = new();
             public bool unlockSuper = false;
-            public bool NoArrows = false;
+            public bool NoAmmo = false;
 
             [Serializable]
             public class ModifySkill
