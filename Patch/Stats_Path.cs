@@ -7,6 +7,7 @@ using static Player;
 using static Skills;
 using static TribeClasses.LevelsSystemTree;
 using static TribeClasses.Plugin;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace TribeClasses
@@ -434,8 +435,14 @@ namespace TribeClasses
             }
             bool flag = bonuses.NoAmmo;
             if(!flag) return;
+            if(__instance.m_ammoItem == null) return;
+            _self.Debug($"ammo {__instance.m_ammoItem.m_shared.m_name}");
 
-            __instance.m_character.m_inventory.AddItem(__instance.m_ammoItem);
+            GameObject gameObject = Object.Instantiate<GameObject>(new("Ignor"));
+            ItemDrop itemDrop = gameObject.AddComponent<ItemDrop>();
+            itemDrop.m_itemData = __instance.m_ammoItem;
+
+            __instance.m_character.PickupPrefab(gameObject);
         }
         #endregion
 

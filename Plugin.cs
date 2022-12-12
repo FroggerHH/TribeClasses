@@ -352,6 +352,17 @@ namespace TribeClasses
             healStaff.RequiredItems.Add("BlackCore", 1);
             healStaff.RequiredItems.Add("Eitr", 15);
             #endregion
+            #region StaffBaff
+            Item baffStaff = new(assetBundle, "_JF_StaffBuff");
+            baffStaff.Configurable = Configurability.Full;
+            baffStaff.Name.Russian("Посох");
+            baffStaff.Name.English("");
+            baffStaff.Crafting.Add("piece_magetable", 1);
+            baffStaff.RequiredItems.Add("YggdrasilWood", 25);
+            baffStaff.RequiredItems.Add("BlackCore", 1);
+            baffStaff.RequiredItems.Add("Eitr", 15);
+            //MaterialReplacer.RegisterGameObjectForShaderSwap(baffStaff.Prefab, MaterialReplacer.ShaderType.CustomCreature);
+            #endregion
             #region AncientsHorn
             Item ancientsHorn = new(assetBundle, "_JF_AncientsHorn");
             ancientsHorn.Configurable = Configurability.Full;
@@ -892,7 +903,7 @@ namespace TribeClasses
                                     level = 40,
                                     bonuses = new()
                                     {
-                                        Eitr = 50
+                                        Stamina = 50
                                     }
                                 },
                                 new LevelInfo
@@ -900,7 +911,8 @@ namespace TribeClasses
                                     level = 50,
                                     bonuses = new()
                                     {
-                                        unlockSuper = true
+                                        unlockSuper = true,
+                                        BowReloadTime = 10
                                     }
                                 },
                                 new LevelInfo
@@ -940,7 +952,8 @@ namespace TribeClasses
                                     level = 100,
                                     bonuses = new()
                                     {
-                                        BowReloadTime = 60
+                                        BowReloadTime = 50,
+                                        NoAmmo = true
                                     }
                                 }
                             },
