@@ -355,8 +355,8 @@ namespace TribeClasses
             #region StaffBaff
             Item baffStaff = new(assetBundle, "_JF_StaffBuff");
             baffStaff.Configurable = Configurability.Full;
-            baffStaff.Name.Russian("Посох");
-            baffStaff.Name.English("");
+            baffStaff.Name.Russian("Посох усиления");
+            baffStaff.Name.English("StaffBuff");
             baffStaff.Crafting.Add("piece_magetable", 1);
             baffStaff.RequiredItems.Add("YggdrasilWood", 25);
             baffStaff.RequiredItems.Add("BlackCore", 1);
@@ -952,8 +952,8 @@ namespace TribeClasses
                                     level = 100,
                                     bonuses = new()
                                     {
-                                        BowReloadTime = 50,
-                                        NoAmmo = true
+                                        BowReloadTime = 50/*,
+                                        NoAmmo = true*/
                                     }
                                 }
                             },
