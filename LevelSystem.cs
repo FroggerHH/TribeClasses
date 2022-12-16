@@ -34,9 +34,6 @@ namespace TribeClasses
         internal float groupExpFactor;
         #endregion
         internal bool canUseSuper = true;
-        internal float HPAdded = 0;
-        internal float EitrAdded = 0;
-        internal float staminaAdded = 0;
         internal DateTime LastX2Damage;
         internal DateTime LastReturnDmg;
         internal DateTime LastNotTakeDmg;
@@ -232,18 +229,6 @@ namespace TribeClasses
                 return;
             }
 
-            m_localPlayer.m_baseHP -= HPAdded;
-            m_localPlayer.m_baseHP += bonuses.Health;
-            HPAdded = bonuses.Health;
-
-            m_localPlayer.m_maxEitr -= EitrAdded;
-            m_localPlayer.m_maxEitr += bonuses.Eitr;
-            EitrAdded = bonuses.Eitr;
-
-            m_localPlayer.m_baseStamina -= staminaAdded;
-            m_localPlayer.m_baseStamina += bonuses.Stamina;
-            staminaAdded = bonuses.Stamina;
-
             _self.Debug("Bonuses Applied");
         }
         internal void AddSuperBonuses(Super super)
@@ -281,10 +266,6 @@ namespace TribeClasses
         }
         internal void RemoveBonuses()
         {
-            m_localPlayer.m_baseHP -= HPAdded;
-            m_localPlayer.m_baseStamina -= staminaAdded;
-            HPAdded = 0;
-            staminaAdded = 0;
             _self.Debug("Bonuses Removed");
         }
         internal int GetExpForNewLevel()

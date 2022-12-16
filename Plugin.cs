@@ -93,7 +93,7 @@ namespace TribeClasses
                 UseValuesOfEnums = true
             };
 
-            if (Chainloader.PluginInfos.ContainsKey("org.bepinex.plugins.dualwield"))
+            if(Chainloader.PluginInfos.ContainsKey("org.bepinex.plugins.dualwield"))
             {
                 haveDualWieldInstaled = true;
             }
@@ -492,7 +492,7 @@ namespace TribeClasses
             #endregion
 
 
-            if (haveDualWieldInstaled)
+            if(haveDualWieldInstaled)
             {
                 harmony.PatchAll(typeof(DualWieldPatch));
             }
@@ -505,15 +505,15 @@ namespace TribeClasses
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if(Input.GetKeyDown(KeyCode.Escape))
             {
                 isInputField = false;
             }
 
-            if (SceneManager.GetActiveScene().name == "main" && m_localPlayer && !m_localPlayer.InCutscene() && !m_localPlayer.IsTeleporting() && HaveClass())
+            if(SceneManager.GetActiveScene().name == "main" && m_localPlayer && !m_localPlayer.InCutscene() && !m_localPlayer.IsTeleporting() && HaveClass())
             {
                 LevelSystem.Instance.Update();
-                if (!isInputField)
+                if(!isInputField)
                 {
                     UI.Instance.Update();
                 }
@@ -531,12 +531,12 @@ namespace TribeClasses
         }
         public void SetupWatcherOnLevelTree()
         {
-            if (!ZNet.instance.IsServer())
+            if(!ZNet.instance.IsServer())
             {
                 return;
             }
 
-            if (!File.Exists(levelTreePath))
+            if(!File.Exists(levelTreePath))
             {
                 File.WriteAllText(levelTreePath, JSON.ToNiceJSON(new LevelsSystemTree
                 {
@@ -1123,12 +1123,12 @@ namespace TribeClasses
         }
         public void SetupWatcherOnMonstersSettings()
         {
-            if (!ZNet.instance.IsServer())
+            if(!ZNet.instance.IsServer())
             {
                 return;
             }
 
-            if (!File.Exists(monstersSettingsPath))
+            if(!File.Exists(monstersSettingsPath))
             {
                 File.WriteAllText(monstersSettingsPath, JSON.ToNiceJSON(new MonstersSettings
                 {
@@ -1362,7 +1362,7 @@ namespace TribeClasses
         }
         private void ConfigChanged(object sender, FileSystemEventArgs e)
         {
-            if ((DateTime.Now - LastConfigChange).TotalSeconds <= 5.0)
+            if((DateTime.Now - LastConfigChange).TotalSeconds <= 5.0)
             {
                 return;
             }
@@ -1408,40 +1408,40 @@ namespace TribeClasses
             [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
             private static void ZNetScenePatch()
             {
-                if (SceneManager.GetActiveScene().name == "main")
+                if(SceneManager.GetActiveScene().name == "main")
                 {
                     _self.Config.Reload();
                     UI.Instance.Init();
 
                     GameObject staffSkeleton = ZNetScene.instance.GetPrefab("StaffSkeleton");
                     ItemDrop staffSkeletonItemDrop = staffSkeleton.GetComponent<ItemDrop>();
-                    if (staffSkeleton)
+                    if(staffSkeleton)
                     {
                         staffSkeletonItemDrop.m_itemData.m_shared.m_maxQuality = 15;
                     }
 
-                    if (!ZNetScene.instance.m_prefabs.Contains(_self._JF_SFX_craftitem_altar) && _self._JF_SFX_craftitem_altar)
+                    if(!ZNetScene.instance.m_prefabs.Contains(_self._JF_SFX_craftitem_altar) && _self._JF_SFX_craftitem_altar)
                     {
                         ZNetScene.instance.m_prefabs.Add(_self._JF_SFX_craftitem_altar);
                         ZNetScene.instance.m_namedPrefabs.Add(_self._JF_SFX_craftitem_altar.name.GetStableHashCode(), _self._JF_SFX_craftitem_altar);
                     }
-                    if (!ZNetScene.instance.m_prefabs.Contains(_self.fx_heal_staff_explosion) && _self.fx_heal_staff_explosion)
+                    if(!ZNetScene.instance.m_prefabs.Contains(_self.fx_heal_staff_explosion) && _self.fx_heal_staff_explosion)
                     {
                         ZNetScene.instance.m_prefabs.Add(_self.fx_heal_staff_explosion);
                         ZNetScene.instance.m_namedPrefabs.Add(_self.fx_heal_staff_explosion.name.GetStableHashCode(), _self.fx_heal_staff_explosion);
                     }
-                    if (!ZNetScene.instance.m_prefabs.Contains(_self.staff_heal_projectile) && _self.staff_heal_projectile)
+                    if(!ZNetScene.instance.m_prefabs.Contains(_self.staff_heal_projectile) && _self.staff_heal_projectile)
                     {
                         ZNetScene.instance.m_prefabs.Add(_self.staff_heal_projectile);
                         ZNetScene.instance.m_namedPrefabs.Add(_self.staff_heal_projectile.name.GetStableHashCode(), _self.staff_heal_projectile);
                     }
-                    if (!ZNetScene.instance.m_prefabs.Contains(_self.staff_heal_aoe) && _self.staff_heal_aoe)
+                    if(!ZNetScene.instance.m_prefabs.Contains(_self.staff_heal_aoe) && _self.staff_heal_aoe)
                     {
                         ZNetScene.instance.m_prefabs.Add(_self.staff_heal_aoe);
                         ZNetScene.instance.m_namedPrefabs.Add(_self.staff_heal_aoe.name.GetStableHashCode(), _self.staff_heal_aoe);
                     }
 
-                    if (!ZNet.instance.IsServer())
+                    if(!ZNet.instance.IsServer())
                     {
                         return;
                     }
@@ -1451,312 +1451,278 @@ namespace TribeClasses
                 }
             }
 
-            [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.Pickup)), HarmonyPrefix]
-            private static bool HumanoidGetRunePatch(GameObject go, Player __instance, ref bool __result)
+            [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.Pickup)), HarmonyPostfix]
+            private static void HumanoidGetRunePatch(GameObject go, Player __instance, ref bool __result)
             {
-                if (SceneManager.GetActiveScene().name != "main")
+                if(SceneManager.GetActiveScene().name != "main")
                 {
-                    return true;
+                    return;
                 }
 
-                if (!__instance.IsPlayer() || __instance != m_localPlayer)
+                if(!__instance.IsPlayer() || __instance != m_localPlayer)
                 {
-                    return true;
+                    return;
                 }
 
                 Inventory inventory = __instance.GetInventory();
-                if (__instance.IsTeleporting())
+                if(__instance.IsTeleporting())
                 {
-                    return true;
+                    return;
                 }
 
-                ItemDrop component = go.GetComponent<ItemDrop>();
-                if (component == null)
+                ItemDrop component = go.GetComponent<ItemDrop>(); if(component == null)
                 {
-                    return true;
+                    return;
                 }
 
-                component.Load();
-                if (__instance.IsPlayer() && (component.m_itemData.m_shared.m_icons == null || component.m_itemData.m_shared.m_icons.Length == 0 || component.m_itemData.m_variant >= component.m_itemData.m_shared.m_icons.Length))
+                component.Load(); if(__instance.IsPlayer() && (component.m_itemData.m_shared.m_icons == null || component.m_itemData.m_shared.m_icons.Length == 0 || component.m_itemData.m_variant >= component.m_itemData.m_shared.m_icons.Length))
                 {
-                    return true;
+                    return;
                 }
 
-                if (component.m_itemData.m_shared.m_name == "$item_class_rune_RESET")
+                if(component.m_itemData.m_shared.m_name == "$item_class_rune_RESET")
                 {
                     component.m_nview.Destroy();
                     string msg = $"${GetClass()}_class_reseted";
                     ResetClass();
-                    __result = true;
+                    inventory.RemoveOneItem(component.m_itemData);
                     __instance.Message(MessageHud.MessageType.Center, msg, 0, null);
-                    return false;
+                    return;
                 }
-
-                /*if (GetClass() != "none" && component.m_itemData.m_shared.m_name.StartsWith("$item_class_rune"))
+                else if(GetClass() != "none" && component.m_itemData.m_shared.m_name.StartsWith("$item_class_rune"))
                 {
                     __instance.Message(MessageHud.MessageType.Center, "$msg_cantpickup", 0, null);
-                    __result = false;
-                    return false;
                 }
-                else */
-                if (component.m_itemData.m_shared.m_name == "$item_class_rune_guardian")
+                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_guardian")
                 {
                     SetClass(Class.Guardian);
                     component.m_nview.Destroy();
-                    inventory.RemoveOneItem(component.m_itemData);
                     __result = true;
                 }
-                else if (component.m_itemData.m_shared.m_name == "$item_class_rune_druid")
+                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_druid")
                 {
                     SetClass(Class.Druid);
                     component.m_nview.Destroy();
-                    inventory.RemoveOneItem(component.m_itemData);
                     __result = true;
                 }
-                else if (component.m_itemData.m_shared.m_name == "$item_class_rune_berserker")
+                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_berserker")
                 {
                     SetClass(Class.Berserker);
                     component.m_nview.Destroy();
-                    inventory.RemoveOneItem(component.m_itemData);
                     __result = true;
                 }
-                else if (component.m_itemData.m_shared.m_name == "$item_class_rune_ranger")
+                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_ranger")
                 {
                     SetClass(Class.Ranger);
                     component.m_nview.Destroy();
-                    inventory.RemoveOneItem(component.m_itemData);
                     __result = true;
                 }
 
-                if (__result == true)
+                if(__result == true)
                 {
                     string msg = $"${GetClass()}_class_started";
                     __instance.Message(MessageHud.MessageType.Center, msg, 0, null);
-
-                    return false;
                 }
-                return true;
+                inventory.RemoveOneItem(component.m_itemData);
             }
 
-            [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(string), typeof(int), typeof(float), typeof(Vector2i), typeof(bool), typeof(int), typeof(int), typeof(long), typeof(string), typeof(Dictionary<string, string>)), HarmonyPrefix]
-            private static bool InventoryGetRune1Patch(string name, Inventory __instance)
+            [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(string), typeof(int), typeof(float), typeof(Vector2i), typeof(bool), typeof(int), typeof(int), typeof(long), typeof(string), typeof(Dictionary<string, string>)), HarmonyPostfix]
+            private static void InventoryGetRune1Patch(string name, Inventory __instance)
             {
-                if (SceneManager.GetActiveScene().name != "main")
+                if(SceneManager.GetActiveScene().name != "main")
                 {
-                    return true;
+                    return;
                 }
-
-                if (!m_localPlayer)
+                if(!m_localPlayer)
                 {
-                    return true;
+                    return;
                 }
 
                 bool result = false;
                 GameObject prefab = ZNetScene.instance.GetPrefab(name);
-                if (!prefab)
+                if(!prefab)
                 {
-                    return true;
+                    return;
                 }
 
                 ItemDrop component = prefab.GetComponent<ItemDrop>();
-                if (!component)
+                if(!component)
                 {
-                    return true;
+                    return;
                 }
 
-                if (name == "ResetRune")
+                string msg = string.Empty;
+                if(name == "ResetRune")
                 {
-                    string msg = $"${GetClass()}_class_reseted";
                     ResetClass();
-                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
-                    return true;
+                    msg = $"${GetClass()}_class_reseted";
+                    result = false;
                 }
-
-                if (HaveClass() && name.Contains("_JF_") && name.Contains("Rune"))
+                else if(HaveClass() && name.Contains("_JF_") && name.Contains("Rune"))
                 {
-                    m_localPlayer.Message(MessageHud.MessageType.Center, "$msg_cantpickup", 0, null);
-                    return false;
+                    msg = "$msg_cantpickup";
+                    result = false;
                 }
-                else if (name == "GuardianRune")
+                else if(name == "GuardianRune")
                 {
                     SetClass(Class.Guardian);
-                    __instance.RemoveOneItem(component.m_itemData);
                     result = true;
                 }
-                else if (name == "DruidRune")
+                else if(name == "DruidRune")
                 {
                     SetClass(Class.Druid);
-                    __instance.RemoveOneItem(component.m_itemData);
                     result = true;
                 }
-                else if (name == "BerserkerRune")
+                else if(name == "BerserkerRune")
                 {
                     SetClass(Class.Berserker);
-                    __instance.RemoveOneItem(component.m_itemData);
                     result = true;
                 }
-                else if (name == "RangerRune")
+                else if(name == "RangerRune")
                 {
                     SetClass(Class.Ranger);
-                    __instance.RemoveOneItem(component.m_itemData);
                     result = true;
                 }
 
-                if (result == true)
+                if(result == true)
                 {
-                    string msg = $"${GetClass()}_class_started";
-                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
-
-                    return false;
+                    msg = $"${GetClass()}_class_started";
                 }
-                return true;
+                m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
+                __instance.RemoveOneItem(component.m_itemData);
             }
-            [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(ItemDrop.ItemData)), HarmonyPrefix]
-            private static bool InventoryGetRune2Patch(ItemDrop.ItemData item, Inventory __instance)
+            [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(ItemDrop.ItemData)), HarmonyPostfix]
+            private static void InventoryGetRune2Patch(ItemDrop.ItemData item, Inventory __instance)
             {
-                if (SceneManager.GetActiveScene().name != "main")
+                if(SceneManager.GetActiveScene().name != "main")
                 {
-                    return true;
+                    return;
+                }
+                if(!m_localPlayer)
+                {
+                    return;
                 }
 
-                if (!m_localPlayer)
+                string msg = string.Empty;
+                bool result = false;
+                if(item.m_shared.m_name == "$item_class_rune_RESET")
                 {
-                    return true;
+                    msg = $"${GetClass()}_class_reseted";
+                    ResetClass();
+                    result = false;
+                }
+
+                if(GetClass() != "none" && item.m_shared.m_name.EndsWith("Rune"))
+                {
+                    msg = "$msg_cantpickup";
+                    result = false;
+                }
+                else if(item.m_shared.m_name == "$item_class_rune_guardian")
+                {
+                    SetClass(Class.Guardian);
+                    result = true;
+                }
+                else if(item.m_shared.m_name == "$item_class_rune_druid")
+                {
+                    SetClass(Class.Druid);
+                    result = true;
+                }
+                else if(item.m_shared.m_name == "$item_class_rune_berserker")
+                {
+                    SetClass(Class.Berserker);
+                    result = true;
+                }
+                else if(item.m_shared.m_name == "$item_class_rune_ranger")
+                {
+                    SetClass(Class.Ranger);
+                    result = true;
+                }
+
+                if(result == true)
+                {
+                    msg = $"${GetClass()}_class_started";
+                }
+                __instance.RemoveOneItem(item);
+                m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
+            }
+            [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int)), HarmonyPostfix]
+            private static void InventoryGetRune3Patch(ItemDrop.ItemData item, Inventory __instance)
+            {
+                if(SceneManager.GetActiveScene().name != "main")
+                {
+                    return;
+                }
+                if(!m_localPlayer)
+                {
+                    return;
                 }
 
                 bool result = false;
-                if (item.m_shared.m_name == "$item_class_rune_RESET")
+                string msg = string.Empty;
+                if(item.m_shared.m_name == "$item_class_rune_RESET")
                 {
-                    string msg = $"${GetClass()}_class_reseted";
+                    msg = $"${GetClass()}_class_reseted";
                     ResetClass();
-                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
-                    return false;
+                    result = false;
                 }
 
-                if (GetClass() != "none" && item.m_shared.m_name.EndsWith("Rune"))
+                if(GetClass() != "none" && item.m_shared.m_name.EndsWith("Rune"))
                 {
-                    m_localPlayer.Message(MessageHud.MessageType.Center, "$msg_cantpickup", 0, null);
-                    return false;
+                    msg = "$msg_cantpickup";
+                    result = false;
                 }
-                else if (item.m_shared.m_name == "$item_class_rune_guardian")
+                else if(item.m_shared.m_name == "$item_class_rune_guardian")
                 {
                     SetClass(Class.Guardian);
-                    __instance.RemoveOneItem(item);
                     result = true;
                 }
-                else if (item.m_shared.m_name == "$item_class_rune_druid")
+                else if(item.m_shared.m_name == "$item_class_rune_druid")
                 {
                     SetClass(Class.Druid);
-                    __instance.RemoveOneItem(item);
                     result = true;
                 }
-                else if (item.m_shared.m_name == "$item_class_rune_berserker")
+                else if(item.m_shared.m_name == "$item_class_rune_berserker")
                 {
                     SetClass(Class.Berserker);
-                    __instance.RemoveOneItem(item);
                     result = true;
                 }
-                else if (item.m_shared.m_name == "$item_class_rune_ranger")
+                else if(item.m_shared.m_name == "$item_class_rune_ranger")
                 {
                     SetClass(Class.Ranger);
-                    __instance.RemoveOneItem(item);
                     result = true;
                 }
 
-                if (result == true)
+                if(result == true)
                 {
-                    string msg = $"${GetClass()}_class_started";
-                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
+                    msg = $"${GetClass()}_class_started";
 
-                    return false;
                 }
-                return true;
-            }
-
-            [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int)), HarmonyPrefix]
-            private static bool InventoryGetRune3Patch(ItemDrop.ItemData item, Inventory __instance)
-            {
-                if (SceneManager.GetActiveScene().name != "main")
-                {
-                    return true;
-                }
-
-                if (!m_localPlayer)
-                {
-                    return true;
-                }
-
-                bool result = false;
-                if (item.m_shared.m_name == "$item_class_rune_RESET")
-                {
-                    string msg = $"${GetClass()}_class_reseted";
-                    ResetClass();
-                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
-                    return false;
-                }
-
-                if (GetClass() != "none" && item.m_shared.m_name.EndsWith("Rune"))
-                {
-                    m_localPlayer.Message(MessageHud.MessageType.Center, "$msg_cantpickup", 0, null);
-                    return false;
-                }
-                else if (item.m_shared.m_name == "$item_class_rune_guardian")
-                {
-                    SetClass(Class.Guardian);
-                    __instance.RemoveOneItem(item);
-                    result = true;
-                }
-                else if (item.m_shared.m_name == "$item_class_rune_druid")
-                {
-                    SetClass(Class.Druid);
-                    __instance.RemoveOneItem(item);
-                    result = true;
-                }
-                else if (item.m_shared.m_name == "$item_class_rune_berserker")
-                {
-                    SetClass(Class.Berserker);
-                    __instance.RemoveOneItem(item);
-                    result = true;
-                }
-                else if (item.m_shared.m_name == "$item_class_rune_ranger")
-                {
-                    SetClass(Class.Ranger);
-                    __instance.RemoveOneItem(item);
-                    result = true;
-                }
-
-                if (result == true)
-                {
-                    string msg = $"${GetClass()}_class_started";
-                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
-
-                    return false;
-                }
-                return true;
+                m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
+                __instance.RemoveOneItem(item);
             }
 
             [HarmonyPatch(typeof(Attack), nameof(Attack.Start)), HarmonyPrefix]
             private static bool ActivateSuper(Humanoid character, ItemDrop.ItemData weapon, Attack __instance)
             {
-                if (SceneManager.GetActiveScene().name != "main")
+                if(SceneManager.GetActiveScene().name != "main")
                 {
                     return true;
                 }
 
-                if (weapon?.m_shared.m_name == "$item_ancients_horn")
+                if(weapon?.m_shared.m_name == "$item_ancients_horn")
                 {
                     _self.Debug($"ActivateSuper");
-                    if (HaveClass() && LevelSystem.Instance.GetFullBonuses().unlockSuper)
+                    if(HaveClass() && LevelSystem.Instance.GetFullBonuses().unlockSuper)
                     {
-                        if (character && character == m_localPlayer)
+                        if(character && character == m_localPlayer)
                         {
-                            if (LevelSystem.Instance.UseSuper())
+                            if(LevelSystem.Instance.UseSuper())
                             {
                                 return true;
                             }
-                            else if ((DateTime.Now - LevelSystem.Instance.LastSuper).TotalSeconds >= 1.0)
+                            else if((DateTime.Now - LevelSystem.Instance.LastSuper).TotalSeconds >= 1.0)
                             {
-                                if (LevelSystem.Instance.HaveOwnSuper())
+                                if(LevelSystem.Instance.HaveOwnSuper())
                                 {
                                     character.Message(MessageHud.MessageType.Center, "$super_already_active");
                                 }
@@ -1786,11 +1752,11 @@ namespace TribeClasses
             private static bool Prefix(ItemDrop.ItemData item)
             {
                 ClassInfo classTree = LevelSystem.Instance.GetClassTree();
-                for (int i = 0; i < classTree?.dualWieldExcludedTypesOfWeapons.Count; i++)
+                for(int i = 0; i < classTree?.dualWieldExcludedTypesOfWeapons.Count; i++)
                 {
-                    if (item != null)
+                    if(item != null)
                     {
-                        if (item.m_shared.m_skillType == SkillTypeFromName(classTree.dualWieldExcludedTypesOfWeapons[i]))
+                        if(item.m_shared.m_skillType == SkillTypeFromName(classTree.dualWieldExcludedTypesOfWeapons[i]))
                         {
                             return false;
                         }
@@ -1806,7 +1772,7 @@ namespace TribeClasses
         static byte[] StreamToByteArray(Stream input)
         {
             byte[] result;
-            using (MemoryStream memoryStream = new MemoryStream())
+            using(MemoryStream memoryStream = new MemoryStream())
             {
                 input.CopyTo(memoryStream);
                 result = memoryStream.ToArray();
@@ -1821,7 +1787,7 @@ namespace TribeClasses
         public static AssetBundle LoadAssetBundleFromResources(string bundleName)
         {
             Assembly resourceAssembly = Assembly.GetExecutingAssembly();
-            if (resourceAssembly == null)
+            if(resourceAssembly == null)
             {
                 throw new ArgumentNullException("Parameter resourceAssembly can not be null.");
             }
@@ -1830,16 +1796,16 @@ namespace TribeClasses
             {
                 text = resourceAssembly.GetManifestResourceNames().Single((string str) => str.EndsWith(bundleName));
             }
-            catch (Exception)
+            catch(Exception)
             {
             }
-            if (text == null)
+            if(text == null)
             {
                 _self.DebugError("AssetBundle " + bundleName + " not found in assembly manifest");
                 return null;
             }
             AssetBundle result;
-            using (Stream manifestResourceStream = resourceAssembly.GetManifestResourceStream(text))
+            using(Stream manifestResourceStream = resourceAssembly.GetManifestResourceStream(text))
             {
                 result = AssetBundle.LoadFromStream(manifestResourceStream);
             }
@@ -1849,7 +1815,7 @@ namespace TribeClasses
 
         public static SkillType SkillTypeFromName(string skillName)
         {
-            if (Enum.TryParse(skillName, out SkillType skill))
+            if(Enum.TryParse(skillName, out SkillType skill))
             {
                 return skill;
             }
@@ -1868,19 +1834,19 @@ namespace TribeClasses
         }
         public static string GetClass(Player player = null)
         {
-            if (!m_localPlayer)
+            if(!m_localPlayer)
             {
                 return "none";
             }
 
-            if (!player)
+            if(!player)
             {
                 player = m_localPlayer;
             }
 
             player.m_knownTexts.TryGetValue("TribeClasses_Class", out string savedClass);
 
-            if (string.IsNullOrEmpty(savedClass))
+            if(string.IsNullOrEmpty(savedClass))
             {
                 return "none";
             }
@@ -1891,14 +1857,14 @@ namespace TribeClasses
         }
         public static bool HaveClass(Player player = null)
         {
-            if (!player)
+            if(!player)
             {
                 player = Player.m_localPlayer;
             }
 
             string savedClass = GetClass(player);
 
-            if (savedClass == "none")
+            if(savedClass == "none")
             {
                 return false;
             }
@@ -1909,7 +1875,7 @@ namespace TribeClasses
         }
         public static void SetClass(Class @class = Class.None, Player player = null)
         {
-            if (player == null)
+            if(player == null)
             {
                 player = Player.m_localPlayer;
             }
@@ -1924,7 +1890,7 @@ namespace TribeClasses
                 _ => "none",
             };
 
-            if (player.m_knownTexts.ContainsKey("TribeClasses_Class"))
+            if(player.m_knownTexts.ContainsKey("TribeClasses_Class"))
             {
                 player.m_knownTexts.Remove("TribeClasses_Class");
             }
@@ -1955,7 +1921,7 @@ namespace TribeClasses
 
         public static void DestroyWithDelay(ZNetView view, float delay)
         {
-            if (view)
+            if(view)
             {
                 _self.StartCoroutine(_self.DestroyWithDelayIEnumerator(view, delay));
             }
@@ -2000,7 +1966,7 @@ namespace TribeClasses
         public IEnumerator AddSuper(Super super)
         {
             bool isMine = super.IsMine();
-            if (isMine)
+            if(isMine)
             {
                 LevelSystem.Instance.canUseSuper = false;
             }
@@ -2010,7 +1976,7 @@ namespace TribeClasses
 
             yield return new WaitForSeconds(super.data.time);
             LevelSystem.Instance.RemooveSuperBonuses();
-            if (isMine)
+            if(isMine)
             {
                 StartCoroutine(SuperСooldown(super));
             }

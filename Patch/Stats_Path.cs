@@ -62,7 +62,6 @@ namespace TribeClasses
             }
 
             eitr += bonuses.Eitr;
-            LevelSystem.Instance.EitrAdded = bonuses.Eitr;
         }
         #endregion
         #region EitrRegen
@@ -105,7 +104,6 @@ namespace TribeClasses
             }
 
             health += bonuses.Health;
-            LevelSystem.Instance.HPAdded = bonuses.Health;
         }
         #endregion
         #region HealthRegen
@@ -148,7 +146,6 @@ namespace TribeClasses
             }
 
             stamina += bonuses.Stamina;
-            LevelSystem.Instance.staminaAdded = bonuses.Stamina;
         }
         #endregion
         #region StaminaRegen
@@ -316,7 +313,7 @@ namespace TribeClasses
         [HarmonyPatch(typeof(Player), nameof(Player.Update)), HarmonyPostfix]
         private static void AddAttackSpeedMele(Player __instance)
         {
-            if(__instance != m_localPlayer || !HaveClass())
+            if(!__instance || __instance != m_localPlayer || !HaveClass() || !__instance.m_animator)
             {
                 return;
             }
@@ -325,12 +322,15 @@ namespace TribeClasses
                 __instance.m_animator.speed = 1;
                 return;
             }
-            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
                 return;
             }
 
-            SkillType skill = __instance.m_currentAttack.m_weapon.m_shared.m_skillType;
+            SkillType? skill = __instance.m_currentAttack?.m_weapon?.m_shared.m_skillType; if(skill == null)
+            {
+                return;
+            }
             if(skill != SkillType.Axes &&
                 skill != SkillType.Swords &&
                 skill != SkillType.Knives &&
@@ -434,8 +434,16 @@ namespace TribeClasses
                 return;
             }
             bool flag = bonuses.NoAmmo;
-            if(!flag) return;
-            if(__instance.m_ammoItem == null) return;
+            if(!flag)
+            {
+                return;
+            }
+
+            if(__instance.m_ammoItem == null)
+            {
+                return;
+            }
+
             _self.Debug($"ammo {__instance.m_ammoItem.m_shared.m_name}");
 
             GameObject gameObject = Object.Instantiate<GameObject>(new("Ignor"));
