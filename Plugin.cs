@@ -123,7 +123,7 @@ namespace TribeClasses
             BuildPiece.ConfigurationEnabled = true;
             altarBerserker.Name
                 .Russian("Алтарь Берсерка")
-                .English("Altar of the Berserker")
+                .English("Berserker Altar")
                 .Czech("Oltář Berserk");
             altarBerserker.Description
                 .Russian("Используется для получения класса берсерк.")
@@ -138,7 +138,7 @@ namespace TribeClasses
             BuildPiece.ConfigurationEnabled = true;
             altarDruid.Name
                 .Russian("Алтарь Друида")
-                .English("Druid's Altar")
+                .English("Druid Altar")
                 .Czech("Druidův Oltář");
             altarDruid.Description
                 .Russian("Используется для получения класса хранитель Друид.")
@@ -153,7 +153,7 @@ namespace TribeClasses
             BuildPiece.ConfigurationEnabled = true;
             altarGuardian.Name
                 .Russian("Алтарь Хранителя")
-                .English("The Guardian's Altar")
+                .English("Guardian Altar")
                 .Czech("Oltář Strážce");
             altarGuardian.Description
                 .Russian("Используется для получения класса хранитель.")
@@ -168,7 +168,7 @@ namespace TribeClasses
             BuildPiece.ConfigurationEnabled = true;
             altarRanger.Name
                 .Russian("Алтарь Рейнджера")
-                .English("Ranger's Altar")
+                .English("Ranger Altar")
                 .Czech("Oltář Strážce");
             altarRanger.Description
                 .Russian("Used to get the ranger class.")
@@ -499,7 +499,6 @@ namespace TribeClasses
 
             _JF_SFX_craftitem_altar = assetBundle.LoadAsset<GameObject>("_JF_SFX_craftitem_altar");
             fx_heal_staff_explosion = assetBundle.LoadAsset<GameObject>("fx_heal_staff_explosion");
-            staff_heal_projectile = assetBundle.LoadAsset<GameObject>("staff_heal_projectile");
             staff_heal_aoe = assetBundle.LoadAsset<GameObject>("staff_heal_aoe");
         }
 
@@ -1452,7 +1451,7 @@ namespace TribeClasses
             }
 
             [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.Pickup)), HarmonyPostfix]
-            private static void HumanoidGetRunePatch(GameObject go, Player __instance, ref bool __result)
+            private static void HumanoidGetRunePatch(GameObject go, Player __instance)
             {
                 if(SceneManager.GetActiveScene().name != "main")
                 {
@@ -1479,51 +1478,55 @@ namespace TribeClasses
                 {
                     return;
                 }
-
-                if(component.m_itemData.m_shared.m_name == "$item_class_rune_RESET")
+                string msg = "";
+                bool result = false;
+                string name = component.m_itemData.m_shared.m_name;
+                if(name == "$item_class_rune_RESET")
                 {
                     component.m_nview.Destroy();
-                    string msg = $"${GetClass()}_class_reseted";
+                    msg = $"${GetClass()}_class_reseted";
                     ResetClass();
-                    inventory.RemoveOneItem(component.m_itemData);
-                    __instance.Message(MessageHud.MessageType.Center, msg, 0, null);
-                    return;
+                    result = true;
                 }
-                else if(GetClass() != "none" && component.m_itemData.m_shared.m_name.StartsWith("$item_class_rune"))
+                else if(GetClass() != "none" && name.StartsWith("$item_class_rune"))
                 {
-                    __instance.Message(MessageHud.MessageType.Center, "$msg_cantpickup", 0, null);
+                    msg = "$msg_cantpickup";
+                    result = true;
                 }
-                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_guardian")
+                else if(name == "$item_class_rune_guardian")
                 {
                     SetClass(Class.Guardian);
+                    msg = $"${GetClass()}_class_started";
                     component.m_nview.Destroy();
-                    __result = true;
+                    result = true;
                 }
-                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_druid")
+                else if(name == "$item_class_rune_druid")
                 {
                     SetClass(Class.Druid);
+                    msg = $"${GetClass()}_class_started";
                     component.m_nview.Destroy();
-                    __result = true;
+                    result = true;
                 }
-                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_berserker")
+                else if(name == "$item_class_rune_berserker")
                 {
                     SetClass(Class.Berserker);
+                    msg = $"${GetClass()}_class_started";
                     component.m_nview.Destroy();
-                    __result = true;
+                    result = true;
                 }
-                else if(component.m_itemData.m_shared.m_name == "$item_class_rune_ranger")
+                else if(name == "$item_class_rune_ranger")
                 {
                     SetClass(Class.Ranger);
+                    msg = $"${GetClass()}_class_started";
                     component.m_nview.Destroy();
-                    __result = true;
+                    result = true;
                 }
 
-                if(__result == true)
+                if(result == true)
                 {
-                    string msg = $"${GetClass()}_class_started";
                     __instance.Message(MessageHud.MessageType.Center, msg, 0, null);
+                    inventory.RemoveOneItem(component.m_itemData);
                 }
-                inventory.RemoveOneItem(component.m_itemData);
             }
 
             [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(string), typeof(int), typeof(float), typeof(Vector2i), typeof(bool), typeof(int), typeof(int), typeof(long), typeof(string), typeof(Dictionary<string, string>)), HarmonyPostfix]
@@ -1552,44 +1555,51 @@ namespace TribeClasses
                 }
 
                 string msg = string.Empty;
-                if(name == "ResetRune")
+                if(!name.Contains("_JF_") || !name.Contains("Rune"))
+                {
+                    return;
+                }
+                if(name == "_JF_ResetRune")
                 {
                     ResetClass();
                     msg = $"${GetClass()}_class_reseted";
-                    result = false;
+                    result = true;
                 }
                 else if(HaveClass() && name.Contains("_JF_") && name.Contains("Rune"))
                 {
                     msg = "$msg_cantpickup";
-                    result = false;
+                    result = true;
                 }
-                else if(name == "GuardianRune")
+                else if(name == "_JF_GuardianRune")
                 {
                     SetClass(Class.Guardian);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(name == "DruidRune")
+                else if(name == "_JF_DruidRune")
                 {
                     SetClass(Class.Druid);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(name == "BerserkerRune")
+                else if(name == "_JF_BerserkerRune")
                 {
                     SetClass(Class.Berserker);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(name == "RangerRune")
+                else if(name == "_JF_RangerRune")
                 {
                     SetClass(Class.Ranger);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
 
-                if(result == true)
+                if(result)
                 {
-                    msg = $"${GetClass()}_class_started";
+                    __instance.RemoveOneItem(component.m_itemData);
+                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
                 }
-                m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
-                __instance.RemoveOneItem(component.m_itemData);
             }
             [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(ItemDrop.ItemData)), HarmonyPostfix]
             private static void InventoryGetRune2Patch(ItemDrop.ItemData item, Inventory __instance)
@@ -1605,45 +1615,54 @@ namespace TribeClasses
 
                 string msg = string.Empty;
                 bool result = false;
-                if(item.m_shared.m_name == "$item_class_rune_RESET")
+                string name = item.m_shared.m_name;
+
+                if(!name.Contains("_JF_") || !name.Contains("Rune"))
+                {
+                    return;
+                }
+
+                if(name == "$item_class_rune_RESET")
                 {
                     msg = $"${GetClass()}_class_reseted";
                     ResetClass();
-                    result = false;
+                    result = true;
                 }
-
-                if(GetClass() != "none" && item.m_shared.m_name.EndsWith("Rune"))
+                else if(HaveClass() && name.EndsWith("Rune"))
                 {
                     msg = "$msg_cantpickup";
-                    result = false;
+                    result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_guardian")
+                else if(name == "$item_class_rune_guardian")
                 {
                     SetClass(Class.Guardian);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_druid")
+                else if(name == "$item_class_rune_druid")
                 {
                     SetClass(Class.Druid);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_berserker")
+                else if(name == "$item_class_rune_berserker")
                 {
                     SetClass(Class.Berserker);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_ranger")
+                else if(name == "$item_class_rune_ranger")
                 {
                     SetClass(Class.Ranger);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
 
                 if(result == true)
                 {
-                    msg = $"${GetClass()}_class_started";
+                    __instance.RemoveOneItem(item);
+                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
                 }
-                __instance.RemoveOneItem(item);
-                m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
             }
             [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int)), HarmonyPostfix]
             private static void InventoryGetRune3Patch(ItemDrop.ItemData item, Inventory __instance)
@@ -1657,48 +1676,56 @@ namespace TribeClasses
                     return;
                 }
 
-                bool result = false;
                 string msg = string.Empty;
-                if(item.m_shared.m_name == "$item_class_rune_RESET")
+                bool result = false;
+                string name = item.m_shared.m_name;
+
+                if(!name.Contains("_JF_") || !name.Contains("Rune"))
+                {
+                    return;
+                }
+
+                if(name == "$item_class_rune_RESET")
                 {
                     msg = $"${GetClass()}_class_reseted";
                     ResetClass();
-                    result = false;
+                    result = true;
                 }
-
-                if(GetClass() != "none" && item.m_shared.m_name.EndsWith("Rune"))
+                else if(HaveClass() && name.EndsWith("Rune"))
                 {
                     msg = "$msg_cantpickup";
-                    result = false;
+                    result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_guardian")
+                else if(name == "$item_class_rune_guardian")
                 {
                     SetClass(Class.Guardian);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_druid")
+                else if(name == "$item_class_rune_druid")
                 {
                     SetClass(Class.Druid);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_berserker")
+                else if(name == "$item_class_rune_berserker")
                 {
                     SetClass(Class.Berserker);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
-                else if(item.m_shared.m_name == "$item_class_rune_ranger")
+                else if(name == "$item_class_rune_ranger")
                 {
                     SetClass(Class.Ranger);
+                    msg = $"${GetClass()}_class_started";
                     result = true;
                 }
 
                 if(result == true)
                 {
-                    msg = $"${GetClass()}_class_started";
-
+                    __instance.RemoveOneItem(item);
+                    m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
                 }
-                m_localPlayer.Message(MessageHud.MessageType.Center, msg, 0, null);
-                __instance.RemoveOneItem(item);
             }
 
             [HarmonyPatch(typeof(Attack), nameof(Attack.Start)), HarmonyPrefix]

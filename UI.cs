@@ -243,8 +243,7 @@ namespace TribeClasses
                 return;
             }
 
-            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
-            if (bonuses == null)
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if (bonuses == null)
             {
                 return;
             }
@@ -312,7 +311,6 @@ namespace TribeClasses
                     if (skills[i].Name.text.ToLower().Contains(item.skillName.ToLower()))
                     {
                         flag = false;
-                        _self.Debug("UpdateStats 2");
                     }
                 }
                 if (flag)
@@ -352,7 +350,7 @@ namespace TribeClasses
             else
             {
                 healthRegeneration.transform.parent.gameObject.SetActive(true);
-                healthRegeneration.text = $"{bonuses.HealthRegeneration}%";
+                healthRegeneration.text = $"{bonuses.HealthRegeneration}";
             }
             if (bonuses.EitrRegeneration == 0)
             {
@@ -361,7 +359,7 @@ namespace TribeClasses
             else
             {
                 eitrRegeneration.transform.parent.gameObject.SetActive(true);
-                eitrRegeneration.text = $"{bonuses.EitrRegeneration}%";
+                eitrRegeneration.text = $"{bonuses.EitrRegeneration}";
             }
             if (bonuses.AllAttackSpeed == 0)
             {
@@ -370,7 +368,7 @@ namespace TribeClasses
             else
             {
                 attackSpeedAll.transform.parent.gameObject.SetActive(true);
-                attackSpeedAll.text = $"{bonuses.AllAttackSpeed}%";
+                attackSpeedAll.text = $"{bonuses.AllAttackSpeed}";
             }
             if (bonuses.MeleAttackSpeed == 0)
             {
@@ -379,7 +377,7 @@ namespace TribeClasses
             else
             {
                 attackSpeedMele.transform.parent.gameObject.SetActive(true);
-                attackSpeedMele.text = $"{bonuses.MeleAttackSpeed}%";
+                attackSpeedMele.text = $"{bonuses.MeleAttackSpeed}";
             }
             if (bonuses.BowReloadTime == 0)
             {
@@ -388,7 +386,7 @@ namespace TribeClasses
             else
             {
                 bowReloadTime.transform.parent.gameObject.SetActive(true);
-                bowReloadTime.text = $"{bonuses.BowReloadTime}%";
+                bowReloadTime.text = $"{bonuses.BowReloadTime}";
             }
             if (!bonuses.NoAmmo)
             {
@@ -405,7 +403,7 @@ namespace TribeClasses
             else
             {
                 attackSpeedSpell.transform.parent.gameObject.SetActive(true);
-                attackSpeedSpell.text = $"{bonuses.SpellAttackSpeed}%";
+                attackSpeedSpell.text = $"{bonuses.SpellAttackSpeed}";
             }
             if (bonuses.Defense == 0)
             {
@@ -414,7 +412,7 @@ namespace TribeClasses
             else
             {
                 defense.transform.parent.gameObject.SetActive(true);
-                defense.text = $"{bonuses.Defense}%";
+                defense.text = $"{bonuses.Defense}";
             }
             if (bonuses.AllDamageMod == 0)
             {
@@ -423,7 +421,7 @@ namespace TribeClasses
             else
             {
                 damageModAll.transform.parent.gameObject.SetActive(true);
-                damageModAll.text = $"{bonuses.AllDamageMod}%";
+                damageModAll.text = $"{bonuses.AllDamageMod}";
             }
             if (bonuses.MeleDamageMod == 0)
             {
@@ -432,7 +430,7 @@ namespace TribeClasses
             else
             {
                 damageModMele.transform.parent.gameObject.SetActive(true);
-                damageModMele.text = $"{bonuses.MeleDamageMod}%";
+                damageModMele.text = $"{bonuses.MeleDamageMod}";
             }
             if (bonuses.BowDamageMod == 0)
             {
@@ -441,7 +439,7 @@ namespace TribeClasses
             else
             {
                 damageModBow.transform.parent.gameObject.SetActive(true);
-                damageModBow.text = $"{bonuses.BowDamageMod}%";
+                damageModBow.text = $"{bonuses.BowDamageMod}";
             }
             if (bonuses.SpellDamageMod == 0)
             {
@@ -450,7 +448,7 @@ namespace TribeClasses
             else
             {
                 damageModSpell.transform.parent.gameObject.SetActive(true);
-                damageModSpell.text = $"{bonuses.SpellDamageMod}%";
+                damageModSpell.text = $"{bonuses.SpellDamageMod}";
             }
             if (bonuses.Stamina == 0)
             {
@@ -468,7 +466,7 @@ namespace TribeClasses
             else
             {
                 staminaRegeneration.transform.parent.gameObject.SetActive(true);
-                staminaRegeneration.text = $"{bonuses.StaminaRegeneration}%";
+                staminaRegeneration.text = $"{bonuses.StaminaRegeneration}";
             }
             if (bonuses.Armor == 0)
             {
@@ -486,7 +484,7 @@ namespace TribeClasses
             else
             {
                 moveSpeed.transform.parent.gameObject.SetActive(true);
-                moveSpeed.text = $"{bonuses.MoveSpeed}%";
+                moveSpeed.text = $"{bonuses.MoveSpeed}";
             }
             if (bonuses.Vampirism == 0)
             {
@@ -504,7 +502,7 @@ namespace TribeClasses
             else
             {
                 chanceToNotTakeDmg.transform.parent.gameObject.SetActive(true);
-                chanceToNotTakeDmg.text = $"{bonuses.ChanceToNotTakeDmg}%";
+                chanceToNotTakeDmg.text = $"{bonuses.ChanceToNotTakeDmg}";
             }
             if (bonuses.ChanceToReturnDmg == 0)
             {
@@ -513,7 +511,7 @@ namespace TribeClasses
             else
             {
                 chanceToReturnDmg.transform.parent.gameObject.SetActive(true);
-                chanceToReturnDmg.text = $"{bonuses.ChanceToReturnDmg}%";
+                chanceToReturnDmg.text = $"{bonuses.ChanceToReturnDmg}";
             }
             if (bonuses.ReturnDmg == 0)
             {
@@ -522,7 +520,7 @@ namespace TribeClasses
             else
             {
                 returnDmg.transform.parent.gameObject.SetActive(true);
-                returnDmg.text = $"{bonuses.ReturnDmg}%";
+                returnDmg.text = $"{bonuses.ReturnDmg}";
             }
             if (bonuses.ChanceToX2Dmg == 0)
             {
@@ -531,7 +529,7 @@ namespace TribeClasses
             else
             {
                 x2DmgChance.transform.parent.gameObject.SetActive(true);
-                x2DmgChance.text = $"{bonuses.ChanceToX2Dmg}%";
+                x2DmgChance.text = $"{bonuses.ChanceToX2Dmg}";
             }
             if (bonuses.MaxCarryWeight == 0)
             {

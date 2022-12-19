@@ -7,7 +7,6 @@ using static Player;
 using static Skills;
 using static TribeClasses.LevelsSystemTree;
 using static TribeClasses.Plugin;
-using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace TribeClasses
@@ -73,16 +72,7 @@ namespace TribeClasses
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
                 float eff = bonuses.EitrRegeneration;
 
-                if(eff > 0)
-                {
-                    eff = Mathf.Min(1, eff / 100f);
-                    eitrMultiplier *= 1 + eff;
-                }
-                else if(eff < 0)
-                {
-                    eff = eff * -1 / 100f;
-                    eitrMultiplier *= 1 - eff;
-                }
+                eitrMultiplier = eitrMultiplier * eff;
             }
         }
         #endregion
@@ -115,16 +105,7 @@ namespace TribeClasses
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
                 float eff = bonuses.HealthRegeneration;
 
-                if(eff > 0)
-                {
-                    eff = Mathf.Min(1, eff / 100f);
-                    regenMultiplier *= 1 + eff;
-                }
-                else if(eff < 0)
-                {
-                    eff = eff * -1 / 100f;
-                    regenMultiplier *= 1 - eff;
-                }
+                regenMultiplier = regenMultiplier * eff;
             }
         }
         #endregion
@@ -160,16 +141,7 @@ namespace TribeClasses
                 }
                 float eff = bonuses.StaminaRegeneration;
 
-                if(eff > 0)
-                {
-                    eff = Mathf.Min(1, eff / 100f);
-                    staminaMultiplier *= 1 + eff;
-                }
-                else if(eff < 0)
-                {
-                    eff = eff * -1 / 100f;
-                    staminaMultiplier *= 1 - eff;
-                }
+                staminaMultiplier = staminaMultiplier * eff;
             }
         }
         #endregion
@@ -201,8 +173,9 @@ namespace TribeClasses
                 if(attacker && attacker.IsPlayer() && m_localPlayer == attacker && HaveClass())
                 {
                     Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+                    if(bonuses == null) return true;
 
-                    attacker.Heal(bonuses.Vampirism);
+                    attacker.Heal(hit.GetTotalDamage() * bonuses.Vampirism);
                 }
             }
             #endregion
@@ -223,18 +196,10 @@ namespace TribeClasses
             Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
             __result += bonuses.Armor;
 
-            float eff = bonuses.AllAttackSpeed;
+            float eff = bonuses.Defense;
 
-            if(eff > 0)
-            {
-                eff = Mathf.Min(1, eff / 100f);
-                __instance.m_animator.speed *= 1 + eff;
-            }
-            else if(eff < 0)
-            {
-                eff = eff * -1 / 100f;
-                __instance.m_animator.speed *= 1 - eff;
-            }
+            eff = Mathf.Min(1, eff / 100f);
+            __result = __result * eff;
         }
         #endregion
 
@@ -252,23 +217,13 @@ namespace TribeClasses
                 __instance.m_animator.speed = 1;
                 return;
             }
-            Bonuses? bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
-                _self.DebugError("AddAttackSpeedALL: bonuses == null");
                 return;
             }
             float eff = bonuses.AllAttackSpeed;
 
-            if(eff > 0)
-            {
-                eff = Mathf.Min(1, eff / 100f);
-                __instance.m_animator.speed *= 1 + eff;
-            }
-            else if(eff < 0)
-            {
-                eff = eff * -1 / 100f;
-                __instance.m_animator.speed *= 1 - eff;
-            }
+            __instance.m_animator.speed = __instance.m_animator.speed * eff;
         }
         #endregion
 
@@ -296,16 +251,7 @@ namespace TribeClasses
             }
 
             float eff = bonuses.SpellAttackSpeed;
-            if(eff > 0)
-            {
-                eff = Mathf.Min(1, eff / 100f);
-                __instance.m_animator.speed *= 1 + eff;
-            }
-            else if(eff < 0)
-            {
-                eff = eff * -1 / 100f;
-                __instance.m_animator.speed *= 1 - eff;
-            }
+            __instance.m_animator.speed = __instance.m_animator.speed * eff;
         }
         #endregion
 
@@ -342,16 +288,7 @@ namespace TribeClasses
             }
             float eff = bonuses.MeleAttackSpeed;
 
-            if(eff > 0)
-            {
-                eff = Mathf.Min(1, eff / 100f);
-                __instance.m_animator.speed *= 1 + eff;
-            }
-            else if(eff < 0)
-            {
-                eff = eff * -1 / 100f;
-                __instance.m_animator.speed *= 1 - eff;
-            }
+            __instance.m_animator.speed = __instance.m_animator.speed * eff;
         }
         #endregion
 
@@ -368,30 +305,13 @@ namespace TribeClasses
                 }
                 float eff = bonuses.MoveSpeed;
 
-                if(eff > 0)
+                if(__instance.m_character.IsSwiming())
                 {
-                    eff = Mathf.Min(1, eff / 100f);
-                    if(__instance.m_character.IsSwiming())
-                    {
-                        speed *= 1 + eff * 0.5f;
-                    }
-                    else
-                    {
-                        speed *= 1 + eff;
-                    }
+                    speed = speed * eff * 0.5f;
                 }
-                else if(eff < 0)
+                else
                 {
-                    eff = eff * -1 / 100f;
-                    if(__instance.m_character.IsSwiming())
-                    {
-
-                        speed *= (1 - eff) * 0.5f;
-                    }
-                    else
-                    {
-                        speed *= 1 - eff;
-                    }
+                    speed = speed * eff;
                 }
                 if(speed < 0f)
                 {
@@ -411,16 +331,7 @@ namespace TribeClasses
             }
             float eff = bonuses.BowReloadTime; // например 20, если увеличить, -20, если уменьшить
 
-            if(eff > 0)
-            {
-                eff = Mathf.Min(0.9f, eff / 100f);
-                __result *= 1 - eff;
-            }
-            else if(eff < 0)
-            {
-                eff = eff * -1 / 100f;
-                __result *= 1 + eff;
-            }
+            __result = __result * eff;
 
         }
         #endregion
@@ -438,19 +349,13 @@ namespace TribeClasses
             {
                 return;
             }
-
             if(__instance.m_ammoItem == null)
             {
                 return;
             }
 
             _self.Debug($"ammo {__instance.m_ammoItem.m_shared.m_name}");
-
-            GameObject gameObject = Object.Instantiate<GameObject>(new("Ignor"));
-            ItemDrop itemDrop = gameObject.AddComponent<ItemDrop>();
-            itemDrop.m_itemData = __instance.m_ammoItem;
-
-            __instance.m_character.PickupPrefab(gameObject);
+            __instance.m_character.Pickup(ObjectDB.instance.GetItemPrefab(__instance.m_ammoItem.m_shared.m_name));
         }
         #endregion
 
@@ -532,21 +437,7 @@ namespace TribeClasses
                     damageMod = bonuses.AllDamageMod;
                 }
 
-                if(damageMod > 0)
-                {
-                    hit.m_damage.Modify(damageMod / 100 + 1);
-                }
-                else if(damageMod < 0)
-                {
-                    if(damageMod <= -101)
-                    {
-                        hit.m_damage.Modify(0);
-                    }
-                    else
-                    {
-                        hit.m_damage.Modify(damageMod * -1 / 100);
-                    }
-                }
+                hit.m_damage.Modify(damageMod);
                 #endregion
             }
             #endregion
@@ -560,17 +451,17 @@ namespace TribeClasses
                 {
                     LevelSystem.Instance.LastReturnDmg = DateTime.Now;
                     HitData hit2 = hit.Clone();
-                    hit2.m_damage.m_blunt = hit.m_damage.m_blunt * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_chop = hit.m_damage.m_chop * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_damage = hit.m_damage.m_damage * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_fire = hit.m_damage.m_fire * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_frost = hit.m_damage.m_frost * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_lightning = hit.m_damage.m_lightning * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_pickaxe = hit.m_damage.m_pickaxe * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_pierce = hit.m_damage.m_pierce * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_poison = hit.m_damage.m_poison * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_slash = hit.m_damage.m_slash * bonuses.ReturnDmg / 100;
-                    hit2.m_damage.m_spirit = hit.m_damage.m_spirit * bonuses.ReturnDmg / 100;
+                    hit2.m_damage.m_blunt = hit.m_damage.m_blunt * bonuses.ReturnDmg;
+                    hit2.m_damage.m_chop = hit.m_damage.m_chop * bonuses.ReturnDmg;
+                    hit2.m_damage.m_damage = hit.m_damage.m_damage * bonuses.ReturnDmg;
+                    hit2.m_damage.m_fire = hit.m_damage.m_fire * bonuses.ReturnDmg;
+                    hit2.m_damage.m_frost = hit.m_damage.m_frost * bonuses.ReturnDmg;
+                    hit2.m_damage.m_lightning = hit.m_damage.m_lightning * bonuses.ReturnDmg;
+                    hit2.m_damage.m_pickaxe = hit.m_damage.m_pickaxe * bonuses.ReturnDmg;
+                    hit2.m_damage.m_pierce = hit.m_damage.m_pierce * bonuses.ReturnDmg;
+                    hit2.m_damage.m_poison = hit.m_damage.m_poison * bonuses.ReturnDmg;
+                    hit2.m_damage.m_slash = hit.m_damage.m_slash * bonuses.ReturnDmg;
+                    hit2.m_damage.m_spirit = hit.m_damage.m_spirit * bonuses.ReturnDmg;
                     hit2.SetAttacker(m_localPlayer);
                     attacker.Damage(hit2);
                     _self.Debug($"ReturnDmg = {hit2.m_damage.GetTotalDamage()}");
