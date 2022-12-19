@@ -48,7 +48,7 @@ namespace TribeClasses
                 if (!API.IsLoaded()) return;
                 _self.Debug($"Adding group exp...");
 
-                float groupFactor = LevelSystem.Instance.groupExpFactor / 100;
+                float groupFactor = LevelSystem.Instance.groupExpFactor;
                 foreach (PlayerReference playerReference in API.GroupPlayers())
                 {
                     if (playerReference.name != m_localPlayer.GetPlayerName())
