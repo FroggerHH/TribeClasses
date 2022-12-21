@@ -71,7 +71,7 @@ namespace TribeClasses
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
                 float eff = bonuses.EitrRegeneration;
-
+                if(eff <= 0) return;
                 eitrMultiplier = eitrMultiplier * eff;
             }
         }
@@ -104,7 +104,7 @@ namespace TribeClasses
             {
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
                 float eff = bonuses.HealthRegeneration;
-
+                if(eff <= 0) return;
                 regenMultiplier = regenMultiplier * eff;
             }
         }
@@ -140,7 +140,7 @@ namespace TribeClasses
                     return;
                 }
                 float eff = bonuses.StaminaRegeneration;
-
+                if(eff <= 0) return;
                 staminaMultiplier = staminaMultiplier * eff;
             }
         }
@@ -197,8 +197,7 @@ namespace TribeClasses
             __result += bonuses.Armor;
 
             float eff = bonuses.Defense;
-
-            eff = Mathf.Min(1, eff / 100f);
+            if(eff <= 0) return;
             __result = __result * eff;
         }
         #endregion
@@ -222,7 +221,7 @@ namespace TribeClasses
                 return;
             }
             float eff = bonuses.AllAttackSpeed;
-
+            if(eff <= 0) return;
             __instance.m_animator.speed = __instance.m_animator.speed * eff;
         }
         #endregion
@@ -251,6 +250,7 @@ namespace TribeClasses
             }
 
             float eff = bonuses.SpellAttackSpeed;
+            if(eff <= 0) return;
             __instance.m_animator.speed = __instance.m_animator.speed * eff;
         }
         #endregion
@@ -287,7 +287,7 @@ namespace TribeClasses
                 return;
             }
             float eff = bonuses.MeleAttackSpeed;
-
+            if(eff <= 0) return;
             __instance.m_animator.speed = __instance.m_animator.speed * eff;
         }
         #endregion
@@ -304,7 +304,7 @@ namespace TribeClasses
                     return;
                 }
                 float eff = bonuses.MoveSpeed;
-
+                if(eff <= 0) return;
                 if(__instance.m_character.IsSwiming())
                 {
                     speed = speed * eff * 0.5f;
@@ -330,7 +330,7 @@ namespace TribeClasses
                 return;
             }
             float eff = bonuses.BowReloadTime; // например 20, если увеличить, -20, если уменьшить
-
+            if(eff <= 0) return;
             __result = __result * eff;
 
         }

@@ -474,6 +474,7 @@ namespace TribeClasses
             SetupWatcherOnConfigFile();
 
             Config.ConfigReloaded += (_, _) => { UpdateConfiguration(); };
+            Config.SettingChanged += (_, _) => { ConfigChanged(null, null); };
 
             Config.SaveOnConfigSet = true;
             Config.Save();
@@ -578,8 +579,8 @@ namespace TribeClasses
                                     level = 1,
                                     bonuses = new()
                                     {
-                                        MeleDamageMod = 20,
-                                        Defense = -20
+                                        MeleDamageMod = 0.2f,
+                                        Defense = 1.2f
                                     }
                                 },
                                 new LevelInfo
@@ -596,7 +597,7 @@ namespace TribeClasses
                                     level = 20,
                                     bonuses = new()
                                     {
-                                        MoveSpeed = 5
+                                        MoveSpeed = 0.05f
                                     }
                                 },
                                 new LevelInfo
@@ -612,7 +613,7 @@ namespace TribeClasses
                                                 add = 20
                                             }
                                         },
-                                        MeleDamageMod = 20
+                                        MeleDamageMod = 1.2f
                                     }
                                 },
                                 new LevelInfo
@@ -637,7 +638,7 @@ namespace TribeClasses
                                     level = 60,
                                     bonuses = new()
                                     {
-                                        Vampirism = 3
+                                        Vampirism = 0.3f
                                     }
                                 },
                                 new LevelInfo
@@ -645,7 +646,7 @@ namespace TribeClasses
                                     level = 70,
                                     bonuses = new()
                                     {
-                                        StaminaRegeneration = 25
+                                        StaminaRegeneration = 1.25f
                                     }
                                 },
                                 new LevelInfo
@@ -670,7 +671,7 @@ namespace TribeClasses
                                     level = 100,
                                     bonuses = new()
                                     {
-                                        MeleAttackSpeed = 30
+                                        MeleAttackSpeed = 1.3f
                                     }
                                 }
                             },
@@ -682,7 +683,7 @@ namespace TribeClasses
                                 cooldown = 240,
                                 bonuses = new()
                                 {
-                                    AllDamageMod = 20
+                                    AllDamageMod = 1.2f
                                 }
                             },
                             dualWieldExcludedTypesOfWeapons = new()
@@ -717,8 +718,8 @@ namespace TribeClasses
                                     level = 1,
                                     bonuses = new()
                                     {
-                                        Defense = 20,
-                                        MeleDamageMod = -20f,
+                                        Defense = 1.2f,
+                                        MeleDamageMod = 0.2f,
                                         m_ModifySkill = new()
                                         {
                                             new()
@@ -781,7 +782,7 @@ namespace TribeClasses
                                     level = 60,
                                     bonuses = new()
                                     {
-                                        Vampirism = 10
+                                        Vampirism = 0.10f
                                     }
                                 },
                                 new LevelInfo
@@ -814,7 +815,7 @@ namespace TribeClasses
                                     bonuses = new()
                                     {
                                         ChanceToReturnDmg = 5,
-                                        ReturnDmg = 10
+                                        ReturnDmg = 0.1f
                                     }
                                 }
                             },
@@ -869,8 +870,8 @@ namespace TribeClasses
                                     level = 1,
                                     bonuses = new()
                                     {
-                                        Defense = -30,
-                                        BowDamageMod = 20
+                                        Defense = 0.3f,
+                                        BowDamageMod = 1.2f
                                     }
                                 },
                                 new LevelInfo
@@ -886,7 +887,7 @@ namespace TribeClasses
                                     level = 20,
                                     bonuses = new()
                                     {
-                                        MoveSpeed = 10
+                                        MoveSpeed = 1.1f
                                     }
                                 },
                                 new LevelInfo
@@ -894,7 +895,7 @@ namespace TribeClasses
                                     level = 30,
                                     bonuses = new()
                                     {
-                                        BowDamageMod = 20
+                                        BowDamageMod = 1.2f
                                     }
                                 },
                                 new LevelInfo
@@ -911,7 +912,7 @@ namespace TribeClasses
                                     bonuses = new()
                                     {
                                         unlockSuper = true,
-                                        BowReloadTime = 10
+                                        BowReloadTime = 1.1f
                                     }
                                 },
                                 new LevelInfo
@@ -919,7 +920,7 @@ namespace TribeClasses
                                     level = 60,
                                     bonuses = new()
                                     {
-                                        MoveSpeed = 20
+                                        MoveSpeed = 1.2f
                                     }
                                 },
                                 new LevelInfo
@@ -927,7 +928,7 @@ namespace TribeClasses
                                     level = 70,
                                     bonuses = new()
                                     {
-                                        AllAttackSpeed = 22
+                                        AllAttackSpeed = 1.22f
                                     }
                                 },
                                 new LevelInfo
@@ -935,7 +936,7 @@ namespace TribeClasses
                                     level = 80,
                                     bonuses = new()
                                     {
-                                        EitrRegeneration = 45
+                                        EitrRegeneration = 1.45f
                                     }
                                 },
                                 new LevelInfo
@@ -951,8 +952,8 @@ namespace TribeClasses
                                     level = 100,
                                     bonuses = new()
                                     {
-                                        BowReloadTime = 50/*,
-                                        NoAmmo = true*/
+                                        BowReloadTime = 1.5f,
+                                        NoAmmo = true
                                     }
                                 }
                             },
@@ -965,7 +966,7 @@ namespace TribeClasses
                                 bonuses = new()
                                 {
                                     Stamina = 50,
-                                    StaminaRegeneration = 35
+                                    StaminaRegeneration = 1.35f
                                 }
                             },
                             dualWieldExcludedTypesOfWeapons = new()
@@ -986,11 +987,11 @@ namespace TribeClasses
                                 Health = 0.6f,
                                 Eitr = 2.6f,
                                 HealthRegeneration = 0,
-                                EitrRegeneration = 0.2f,
-                                Stamina = 0.2f,
+                                EitrRegeneration = 1.2f,
+                                Stamina = 1.2f,
                                 StaminaRegeneration = 0,
                                 Armor = 0,
-                                MoveSpeed = 0.1f,
+                                MoveSpeed = 1.08f,
                                 Vampirism = 0,
                                 ChanceToNotTakeDmg = 0,
                                 MaxCarryWeight = 0,
@@ -1010,9 +1011,9 @@ namespace TribeClasses
                                     level = 1,
                                     bonuses = new()
                                     {
-                                        Defense = -30,
-                                        AllDamageMod = -18,
-                                        SpellDamageMod = 38
+                                        Defense = 0.3f,
+                                        AllDamageMod = 0.18f,
+                                        SpellDamageMod = 1.38f
                                     }
                                 },
                                 new LevelInfo
@@ -1028,7 +1029,7 @@ namespace TribeClasses
                                     level = 20,
                                     bonuses = new()
                                     {
-                                        MoveSpeed = 10
+                                        MoveSpeed = 1.1f
                                     }
                                 },
                                 new LevelInfo
@@ -1036,7 +1037,7 @@ namespace TribeClasses
                                     level = 30,
                                     bonuses = new()
                                     {
-                                        SpellDamageMod = 20
+                                        SpellDamageMod = 1.2f
                                     }
                                 },
                                 new LevelInfo
@@ -1060,7 +1061,7 @@ namespace TribeClasses
                                     level = 60,
                                     bonuses = new()
                                     {
-                                        SpellAttackSpeed = 20
+                                        SpellAttackSpeed = 1.2f
                                     }
                                 },
                                 new LevelInfo
@@ -1068,7 +1069,7 @@ namespace TribeClasses
                                     level = 70,
                                     bonuses = new()
                                     {
-                                        EitrRegeneration = 15
+                                        EitrRegeneration = 1.15f
                                     }
                                 },
                                 new LevelInfo
@@ -1092,7 +1093,7 @@ namespace TribeClasses
                                     level = 100,
                                     bonuses = new()
                                     {
-                                        SpellAttackSpeed = 50
+                                        SpellAttackSpeed = 1.5f
                                     }
                                 }
                             },
@@ -1104,7 +1105,7 @@ namespace TribeClasses
                                 cooldown = 240,
                                 bonuses = new()
                                 {
-                                    HealthRegeneration = 25
+                                    HealthRegeneration = 1.45f
                                 }
                             }
                         }
