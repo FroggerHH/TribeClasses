@@ -5,6 +5,5 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE1006:Стили именования", Justification = "<Ожидание>", Scope = "member", Target = "~M:TribeClasses.Plugin.config``1(System.String,System.String,``0,System.String,System.Boolean)~BepInEx.Configuration.ConfigEntry{``0}")]
-[assembly: SuppressMessage("Style", "IDE1006:Стили именования", Justification = "<Ожидание>", Scope = "member", Target = "~M:TribeClasses.Plugin.config``1(System.String,System.String,``0,BepInEx.Configuration.ConfigDescription,System.Boolean)~BepInEx.Configuration.ConfigEntry{``0}")]
-[assembly: SuppressMessage("Style", "IDE0044:Добавить модификатор только для чтения", Justification = "<Ожидание>", Scope = "member", Target = "~F:TribeClasses.LevelSystem.updateBonuces")]
+[assembly: SuppressMessage("CodeQuality", "IDE0051:Удалите неиспользуемые закрытые члены", Justification = "<Ожидание>", Scope = "member", Target = "~M:TribeClasses.Plugin.Update")]
+[assembly: SuppressMessage("CodeQuality", "IDE0051:Удалите неиспользуемые закрытые члены", Justification = "<Ожидание>", Scope = "member", Target = "~M:TribeClasses.Plugin.Awake")]

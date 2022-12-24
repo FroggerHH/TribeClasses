@@ -68,8 +68,10 @@
     <Reference Include="Groups">
       <HintPath>..\..\utils\Mods\Groups.dll</HintPath>
     </Reference>
-    <Reference Include="ItemManager">
+    <Reference Include="ItemManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\utils\Managers\ItemManager.dll</HintPath>
+      <Private>False</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="LocalizationManager">
       <HintPath>..\..\utils\Managers\LocalizationManager.dll</HintPath>
@@ -118,21 +120,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Patch\Altar_Patch.cs" />
-    <Compile Include="ClassAltar.cs" />
-    <Compile Include="ConfigurationManagerAttributes.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Patch\Altar_Patch.cs" />
+    <Compile Include="Shit\Class.cs" />
+    <Compile Include="Shit\ClassAltar.cs" />
+    <Compile Include="Shit\ConfigurationManagerAttributes.cs" />
+    <Compile Include="Shit\GlobalSuppressions.cs" />
     <Compile Include="Patch\MonsterDeath_Path.cs" />
-    <Compile Include="MonstersSettings.cs" />
-    <Compile Include="LevelsSystemTree.cs" />
+    <Compile Include="Shit\MonstersSettings.cs" />
+    <Compile Include="Shit\LevelsSystemTree.cs" />
     <Compile Include="LevelSystem.cs" />
     <Compile Include="Patch\Trader_Path.cs" />
     <Compile Include="Patch\Stats_Path.cs" />
     <Compile Include="PlayerFVX.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PulsatingGlow.cs" />
-    <Compile Include="SkillObject.cs" />
+    <Compile Include="Shit\PulsatingGlow.cs" />
+    <Compile Include="Shit\SkillObject.cs" />
+    <Compile Include="Shit\Toggle.cs" />
     <Compile Include="TerminalCommands.cs" />
     <Compile Include="Patch\Tutorial_Patch.cs" />
     <Compile Include="UI.cs" />

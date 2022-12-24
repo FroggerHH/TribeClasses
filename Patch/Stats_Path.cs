@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using static ItemDrop.ItemData.AnimationState;
 using static Player;
@@ -65,14 +64,21 @@ namespace TribeClasses
         #endregion
         #region EitrRegen
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyEitrRegen)), HarmonyPostfix]
-        private static void Add(ref float eitrMultiplier, SEMan __instance)
+        private static void AddEitrRegen(ref float eitrMultiplier, SEMan __instance)
         {
-            if(__instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
+            if(__instance.m_character && __instance.m_character.IsPlayer() && __instance.m_character == m_localPlayer && HaveClass())
             {
-                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
+                Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null) return;
                 float eff = bonuses.EitrRegeneration;
                 if(eff <= 0) return;
-                eitrMultiplier = eitrMultiplier * eff;
+                if(eff > 0)
+                {
+                    eitrMultiplier += eitrMultiplier * eff * 0.01f;
+                }
+                if(eff < 0)
+                {
+                    eitrMultiplier -= eitrMultiplier * eff * 0.01f;
+                }
             }
         }
         #endregion
@@ -105,7 +111,14 @@ namespace TribeClasses
                 Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
                 float eff = bonuses.HealthRegeneration;
                 if(eff <= 0) return;
-                regenMultiplier = regenMultiplier * eff;
+                if(eff > 0)
+                {
+                    regenMultiplier = regenMultiplier + regenMultiplier * eff * 0.01f;
+                }
+                if(eff < 0)
+                {
+                    regenMultiplier = regenMultiplier - regenMultiplier * eff * 0.01f;
+                }
             }
         }
         #endregion
@@ -141,7 +154,14 @@ namespace TribeClasses
                 }
                 float eff = bonuses.StaminaRegeneration;
                 if(eff <= 0) return;
-                staminaMultiplier = staminaMultiplier * eff;
+                if(eff > 0)
+                {
+                    staminaMultiplier = staminaMultiplier + staminaMultiplier * eff * 0.01f;
+                }
+                if(eff < 0)
+                {
+                    staminaMultiplier = staminaMultiplier - staminaMultiplier * eff * 0.01f;
+                }
             }
         }
         #endregion
@@ -175,7 +195,7 @@ namespace TribeClasses
                     Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
                     if(bonuses == null) return true;
 
-                    attacker.Heal(hit.GetTotalDamage() * bonuses.Vampirism);
+                    attacker.Heal(hit.GetTotalDamage() * bonuses.Vampirism * 0.01f);
                 }
             }
             #endregion
@@ -196,9 +216,16 @@ namespace TribeClasses
             Bonuses bonuses = LevelSystem.Instance.GetFullBonuses();
             __result += bonuses.Armor;
 
-            float eff = bonuses.Defense;
+            float eff = bonuses.Defense; //10% , armor = 15
             if(eff <= 0) return;
-            __result = __result * eff;
+            if(eff > 0)
+            {
+                __result = __result + __result * eff * 0.01f;
+            }
+            if(eff < 0)
+            {
+                __result = __result - __result * eff * 0.01f;
+            }
         }
         #endregion
 
@@ -222,7 +249,14 @@ namespace TribeClasses
             }
             float eff = bonuses.AllAttackSpeed;
             if(eff <= 0) return;
-            __instance.m_animator.speed = __instance.m_animator.speed * eff;
+            if(eff > 0)
+            {
+                __instance.m_animator.speed = __instance.m_animator.speed + __instance.m_animator.speed * eff * 0.01f;
+            }
+            if(eff < 0)
+            {
+                __instance.m_animator.speed = __instance.m_animator.speed - __instance.m_animator.speed * eff * 0.01f;
+            }
         }
         #endregion
 
@@ -251,7 +285,14 @@ namespace TribeClasses
 
             float eff = bonuses.SpellAttackSpeed;
             if(eff <= 0) return;
-            __instance.m_animator.speed = __instance.m_animator.speed * eff;
+            if(eff > 0)
+            {
+                __instance.m_animator.speed = __instance.m_animator.speed + __instance.m_animator.speed * eff * 0.01f;
+            }
+            if(eff < 0)
+            {
+                __instance.m_animator.speed = __instance.m_animator.speed - __instance.m_animator.speed * eff * 0.01f;
+            }
         }
         #endregion
 
@@ -288,7 +329,14 @@ namespace TribeClasses
             }
             float eff = bonuses.MeleAttackSpeed;
             if(eff <= 0) return;
-            __instance.m_animator.speed = __instance.m_animator.speed * eff;
+            if(eff > 0)
+            {
+                __instance.m_animator.speed = __instance.m_animator.speed + __instance.m_animator.speed * eff * 0.01f;
+            }
+            if(eff < 0)
+            {
+                __instance.m_animator.speed = __instance.m_animator.speed - __instance.m_animator.speed * eff * 0.01f;
+            }
         }
         #endregion
 
@@ -305,17 +353,20 @@ namespace TribeClasses
                 }
                 float eff = bonuses.MoveSpeed;
                 if(eff <= 0) return;
-                if(__instance.m_character.IsSwiming())
+
+                if(eff > 0)
                 {
-                    speed = speed * eff * 0.5f;
+                    if(__instance.m_character.IsSwiming())
+                        speed = (speed + speed * eff * 0.01f) * 0.5f;
+                    else
+                        speed = speed + speed * eff * 0.01f;
                 }
-                else
+                if(eff < 0)
                 {
-                    speed = speed * eff;
-                }
-                if(speed < 0f)
-                {
-                    speed = 0f;
+                    if(__instance.m_character.IsSwiming())
+                        speed = (speed - speed * eff * 0.01f) * 0.5f;
+                    else
+                        speed = speed - speed * eff * 0.01f;
                 }
             }
         }
@@ -331,14 +382,62 @@ namespace TribeClasses
             }
             float eff = bonuses.BowReloadTime; // например 20, если увеличить, -20, если уменьшить
             if(eff <= 0) return;
-            __result = __result * eff;
+            if(eff > 0)
+            {
+                __result = __result - __result * eff * 0.01f;
+            }
+            if(eff < 0)
+            {
+                __result = __result + __result * eff * 0.01f;
+            }
+        }
+        #endregion
 
+        #region DrawStaminaDrain
+        [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetDrawStaminaDrain)), HarmonyPostfix]
+        private static void DrawStaminaDrain(ref float __result)
+        {
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
+            {
+                return;
+            }
+            float eff = bonuses.DrawStaminaDrain;
+            if(eff <= 0) return;
+            if(eff > 0)
+            {
+                __result = __result - __result * eff * 0.01f;
+            }
+            if(eff < 0)
+            {
+                __result = __result + __result * eff * 0.01f;
+            }
+        }
+        #endregion
+
+        #region DrawDruration
+        [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.GetAttackDrawPercentage)), HarmonyPostfix]
+        private static void DrawDruration(ref float __result)
+        {
+            Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
+            {
+                return;
+            }
+            float eff = bonuses.DrawDrurationMin;
+            if(eff <= 0) return;
+            if(eff > 0)
+            {
+                __result = __result - __result * eff * 0.01f;
+            }
+            if(eff < 0)
+            {
+                __result = __result + __result * eff * 0.01f;
+            }
         }
         #endregion
 
         #region NoAmmo
         [HarmonyPatch(typeof(Attack), nameof(Attack.UseAmmo)), HarmonyPostfix]
-        private static void NoAmmo(Attack __instance)
+        private static void NoAmmo(Attack __instance, ItemDrop.ItemData ammoItem)
         {
             Bonuses bonuses = LevelSystem.Instance.GetFullBonuses(); if(bonuses == null)
             {
@@ -349,13 +448,14 @@ namespace TribeClasses
             {
                 return;
             }
-            if(__instance.m_ammoItem == null)
+            if(ammoItem == null || !ammoItem.m_dropPrefab)
             {
                 return;
             }
 
-            _self.Debug($"ammo {__instance.m_ammoItem.m_shared.m_name}");
-            __instance.m_character.Pickup(ObjectDB.instance.GetItemPrefab(__instance.m_ammoItem.m_shared.m_name));
+            //string ammoName = ammoItem?.m_dropPrefab?.name;
+            //_self.Debug($"ammo {ammoName}");
+            //if(!string.IsNullOrEmpty(ammoName)) __instance.m_character.Pickup(ObjectDB.instance.GetItemPrefab(ammoName));
         }
         #endregion
 
@@ -410,7 +510,7 @@ namespace TribeClasses
                 }
 
                 #region DamageMod
-                float damageMod;
+                float eff;
                 SkillType skill = m_localPlayer.GetCurrentWeapon().m_shared.m_skillType;
                 if(skill == SkillType.Axes ||
                     skill == SkillType.Swords ||
@@ -419,25 +519,35 @@ namespace TribeClasses
                     skill == SkillType.Spears ||
                     skill == SkillType.Polearms)
                 {
-                    damageMod = bonuses.MeleDamageMod;
+                    eff = bonuses.MeleDamageMod;
                 }
                 else
                 if(skill == SkillType.BloodMagic ||
                     skill == SkillType.ElementalMagic)
                 {
-                    damageMod = bonuses.SpellDamageMod + bonuses.AllDamageMod;
+                    eff = bonuses.SpellDamageMod + bonuses.AllDamageMod;
                 }
                 else
                 if(skill == SkillType.Bows)
                 {
-                    damageMod = bonuses.BowDamageMod + bonuses.AllDamageMod;
+                    eff = bonuses.BowDamageMod + bonuses.AllDamageMod;
                 }
                 else
                 {
-                    damageMod = bonuses.AllDamageMod;
+                    eff = bonuses.AllDamageMod;
                 }
 
-                hit.m_damage.Modify(damageMod);
+                float resultEff = 1;
+                if(eff > 0)
+                {
+                    resultEff = hit.GetTotalDamage() + hit.GetTotalDamage() * eff * 0.01f;
+                }
+                if(eff < 0)
+                {
+                    resultEff = hit.GetTotalDamage() - hit.GetTotalDamage() * eff * 0.01f;
+                }
+
+                hit.m_damage.Modify(resultEff);
                 #endregion
             }
             #endregion
@@ -451,17 +561,18 @@ namespace TribeClasses
                 {
                     LevelSystem.Instance.LastReturnDmg = DateTime.Now;
                     HitData hit2 = hit.Clone();
-                    hit2.m_damage.m_blunt = hit.m_damage.m_blunt * bonuses.ReturnDmg;
-                    hit2.m_damage.m_chop = hit.m_damage.m_chop * bonuses.ReturnDmg;
-                    hit2.m_damage.m_damage = hit.m_damage.m_damage * bonuses.ReturnDmg;
-                    hit2.m_damage.m_fire = hit.m_damage.m_fire * bonuses.ReturnDmg;
-                    hit2.m_damage.m_frost = hit.m_damage.m_frost * bonuses.ReturnDmg;
-                    hit2.m_damage.m_lightning = hit.m_damage.m_lightning * bonuses.ReturnDmg;
-                    hit2.m_damage.m_pickaxe = hit.m_damage.m_pickaxe * bonuses.ReturnDmg;
-                    hit2.m_damage.m_pierce = hit.m_damage.m_pierce * bonuses.ReturnDmg;
-                    hit2.m_damage.m_poison = hit.m_damage.m_poison * bonuses.ReturnDmg;
-                    hit2.m_damage.m_slash = hit.m_damage.m_slash * bonuses.ReturnDmg;
-                    hit2.m_damage.m_spirit = hit.m_damage.m_spirit * bonuses.ReturnDmg;
+                    float eff = bonuses.ReturnDmg;
+                    float resultEff = 1;
+                    if(eff > 0)
+                    {
+                        resultEff = hit.GetTotalDamage() + hit.GetTotalDamage() * eff * 0.01f;
+                    }
+                    if(eff < 0)
+                    {
+                        resultEff = hit.GetTotalDamage() - hit.GetTotalDamage() * eff * 0.01f;
+                    }
+                    hit2.m_damage.m_damage = resultEff;
+
                     hit2.SetAttacker(m_localPlayer);
                     attacker.Damage(hit2);
                     _self.Debug($"ReturnDmg = {hit2.m_damage.GetTotalDamage()}");

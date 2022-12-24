@@ -17,7 +17,7 @@ namespace TribeClasses
         #region values
         #region configs
         internal ConfigEntry<int> maxLevelConfig;
-        internal ConfigEntry<Plugin.Toggle> healOnLevelUpConfig;
+        internal ConfigEntry<Toggle> healOnLevelUpConfig;
         internal ConfigEntry<int> firstLevelExpConfig;
         internal ConfigEntry<string> levelsSystemTreeConfig;
         internal ConfigEntry<string> monstersSettingsConfig;
@@ -49,7 +49,7 @@ namespace TribeClasses
             {
                 bool flag = _instance == null;
                 LevelSystem result;
-                if (flag)
+                if(flag)
                 {
                     _instance = new LevelSystem();
                     result = _instance;
@@ -69,32 +69,32 @@ namespace TribeClasses
 
         internal void Update()
         {
-            if (updateBonuces && HaveClass())
+            if(updateBonuces && HaveClass())
             {
                 UpdateBonuses();
             }
         }
         internal void UpdateBonuses()
         {
-            if (!HaveClass())
+            if(!HaveClass())
             {
                 bonuses = null;
                 return;
             }
-            if (!m_localPlayer)
+            if(!m_localPlayer)
             {
                 bonuses = null;
                 return;
             }
             LevelInfo levelTree = GetFullLevelTree();
-            if (levelTree == null)
+            if(levelTree == null)
             {
                 bonuses = null;
                 return;
             }
-            if (supers != null && supers.Count > 0)
+            if(supers != null && supers.Count > 0)
             {
-                for (int i = 0; i < supers.Count; i++)
+                for(int i = 0; i < supers.Count; i++)
                 {
                     levelTree.Modify(supers[i].data.bonuses);
                 }
@@ -104,7 +104,7 @@ namespace TribeClasses
             UI.Instance.UpdateStats();
 
             ZDO? zdo = m_localPlayer?.m_nview?.GetZDO();
-            if (zdo == null)
+            if(zdo == null)
             {
                 return;
             }
@@ -119,7 +119,7 @@ namespace TribeClasses
         {
             int currentExp = GetCurrentExp();
 
-            if (currentExp >= exp)
+            if(currentExp >= exp)
             {
                 currentExp -= exp;
             }
@@ -135,7 +135,7 @@ namespace TribeClasses
         {
             int currentExp = GetCurrentExp();
             int currentLevel = GetLevel();
-            if (exp < 1 || currentLevel >= maxLevel)
+            if(exp < 1 || currentLevel >= maxLevel)
             {
                 m_localPlayer.Message(MessageHud.MessageType.TopLeft, "$max_level");
                 return;
@@ -149,12 +149,12 @@ namespace TribeClasses
         }
         internal int GetCurrentExp()
         {
-            if (!Player.m_localPlayer)
+            if(!Player.m_localPlayer)
             {
                 return 0;
             }
 
-            if (!Player.m_localPlayer.m_knownTexts.ContainsKey("TribeClasses_CurrentExp"))
+            if(!Player.m_localPlayer.m_knownTexts.ContainsKey("TribeClasses_CurrentExp"))
             {
                 return 0;
             }
@@ -162,12 +162,12 @@ namespace TribeClasses
         }
         internal int GetLevel()
         {
-            if (!Player.m_localPlayer)
+            if(!Player.m_localPlayer)
             {
                 return 0;
             }
 
-            if (!Player.m_localPlayer.m_knownTexts.ContainsKey("TribeClasses_Level"))
+            if(!Player.m_localPlayer.m_knownTexts.ContainsKey("TribeClasses_Level"))
             {
                 return 0;
             }
@@ -175,7 +175,7 @@ namespace TribeClasses
         }
         internal void AddLevel(int count)
         {
-            if (count <= 0)
+            if(count <= 0)
             {
                 return;
             }
@@ -190,7 +190,7 @@ namespace TribeClasses
         }
         internal void SetLevel(int value)
         {
-            if (!m_localPlayer)
+            if(!m_localPlayer)
             {
                 return;
             }
@@ -208,12 +208,12 @@ namespace TribeClasses
 
             ApplyBonuses();
 
-            if (GetFullBonuses().unlockSuper)
+            if(GetFullBonuses().unlockSuper)
             {
                 ShowTutorial("tutorial_JF_ancients_horn");
             }
 
-            if (healOnLevelUp)
+            if(healOnLevelUp)
             {
                 m_localPlayer.Heal(m_localPlayer.GetMaxHealth());
                 m_localPlayer.AddStamina(m_localPlayer.GetMaxStamina());
@@ -224,7 +224,7 @@ namespace TribeClasses
         {
             UpdateBonuses();
             Bonuses bonuses = GetFullBonuses();
-            if (bonuses == null)
+            if(bonuses == null)
             {
                 return;
             }
@@ -239,21 +239,21 @@ namespace TribeClasses
         }
         internal void RemooveSuperBonuses()
         {
-            if (supers == null || supers.Count == 0)
+            if(supers == null || supers.Count == 0)
             {
                 return;
             }
 
             _self.StopAllCoroutines();
             canUseSuper = true;
-            for (int i = 0; i < superObj.Count; i++)
+            for(int i = 0; i < superObj.Count; i++)
             {
-                if (superObj.Count > 0 && superObj[i])
+                if(superObj.Count > 0 && superObj[i])
                 {
                     DestroyWithDelay(superObj[i].GetComponent<ZNetView>(), 0.2f);
                 }
             }
-            foreach (Super super in supers)
+            foreach(Super super in supers)
             {
                 m_localPlayer.GetSEMan().RemoveStatusEffect(super.data.name);
             }
@@ -282,9 +282,9 @@ namespace TribeClasses
             name = name.Replace("(Clone)", "");
 
 
-            foreach (MonstersSettings.MonstersInfo header in monstersSettings.blocks)
+            foreach(MonstersSettings.MonstersInfo header in monstersSettings.blocks)
             {
-                if (header.Name == name)
+                if(header.Name == name)
                 {
                     returnExp = header.exp;
                     break;
@@ -299,13 +299,13 @@ namespace TribeClasses
         }
         internal Bonuses GetBonuses()
         {
-            if (!HaveClass())
+            if(!HaveClass())
             {
                 return null;
             }
 
             LevelInfo levelTree = GetLevelTree();
-            if (levelTree == null)
+            if(levelTree == null)
             {
                 return null;
             }
@@ -316,14 +316,14 @@ namespace TribeClasses
         {
             int currentExp = GetCurrentExp();
             int needExpForNewLevel = GetExpForNewLevel();
-            if (needExpForNewLevel == 0)
+            if(needExpForNewLevel == 0)
             {
                 return 1;
             }
 
             float levels = currentExp / needExpForNewLevel;
             int returnLevels = Mathf.FloorToInt(levels);
-            if (returnLevels <= 0)
+            if(returnLevels <= 0)
             {
                 returnLevels = 0;
             }
@@ -332,16 +332,16 @@ namespace TribeClasses
         }
         internal ClassInfo GetClassTree(string Class = "local")
         {
-            if (Class == "local")
+            if(Class == "local")
             {
                 Class = GetClass();
             }
 
             ClassInfo classTree = null;
 
-            foreach (ClassInfo _header in levelsSystemTree.blocks)
+            foreach(ClassInfo _header in levelsSystemTree.blocks)
             {
-                if (_header.className == Class)
+                if(_header.className == Class)
                 {
                     classTree = _header;
                     break;
@@ -352,24 +352,25 @@ namespace TribeClasses
         }
         private LevelInfo GetFullLevelTree()
         {
-            if (!HaveClass())
+            if(!HaveClass())
             {
                 return null;
             }
 
             int level = GetLevel();
             ClassInfo classTree = GetClassTree();
-            LevelInfo levelTree = new();
+            LevelInfo levelTree = null;
 
-            if (classTree == null)
+            if(classTree == null)
             {
                 return null;
             }
 
-            foreach (LevelInfo item in classTree.levelTree)
+            foreach(LevelInfo item in classTree.levelTree)
             {
-                if (item.level <= level)
+                if(item.level <= level)
                 {
+                    if(levelTree == null) levelTree = new();
                     levelTree.Modify(item.bonuses);
                 }
             }
@@ -379,7 +380,7 @@ namespace TribeClasses
         }
         private LevelInfo GetLevelTree()
         {
-            if (!HaveClass())
+            if(!HaveClass())
             {
                 return new();
             }
@@ -388,20 +389,20 @@ namespace TribeClasses
             ClassInfo classTree = GetClassTree();
             LevelInfo levelTree = null;
 
-            if (classTree == null)
+            if(classTree == null)
             {
                 return null;
             }
 
-            foreach (LevelInfo item in classTree.levelTree)
+            foreach(LevelInfo item in classTree.levelTree)
             {
-                if (item.level == level)
+                if(item.level == level)
                 {
                     levelTree = item;
                 }
             }
 
-            if (levelTree == null)
+            if(levelTree == null)
             {
                 levelTree = new();
             }
@@ -417,7 +418,7 @@ namespace TribeClasses
             zdo.Set("TribeClasses_CurrentExp", value);
 
             int levelsToAdd = LevelsToAdd();
-            if (levelsToAdd > 0)
+            if(levelsToAdd > 0)
             {
                 AddLevel(levelsToAdd);
             }
@@ -438,7 +439,7 @@ namespace TribeClasses
             zdo.Set("TribeClasses_CurrentExp", currentExp);
             zdo.Set($"TribeClasses_Class", currentClass);
 
-            if (haveDualWieldInstaled)
+            if(haveDualWieldInstaled)
             {
                 UpdateDualWield();
             }
@@ -449,7 +450,7 @@ namespace TribeClasses
         {
             UpdateBonuses();
             Bonuses bonuses = GetFullBonuses();
-            if (bonuses == null)
+            if(bonuses == null)
             {
                 return;
             }
@@ -462,16 +463,16 @@ namespace TribeClasses
         }
         internal void UpdateDualWield()
         {
-            if (!haveDualWieldInstaled)
+            if(!haveDualWieldInstaled)
             {
                 return;
             }
 
             ClassInfo classTree = GetClassTree();
 
-            if (classTree != null && haveDualWieldInstaled)
+            if(classTree != null && haveDualWieldInstaled)
             {
-                if (DualWieldExclusionOriginal == null)
+                if(DualWieldExclusionOriginal == null)
                 {
                     DualWieldExclusionOriginal = DualWieldExclusion;
                 }
@@ -480,18 +481,18 @@ namespace TribeClasses
                     DualWieldExclusion.Clear();
                 }
 
-                for (int i = 0; i < DualWieldExclusionOriginal.Count; i++)
+                for(int i = 0; i < DualWieldExclusionOriginal.Count; i++)
                 {
-                    if (DualWieldExclusion.Contains(DualWieldExclusionOriginal[i]))
+                    if(DualWieldExclusion.Contains(DualWieldExclusionOriginal[i]))
                     {
                         continue;
                     }
 
                     DualWieldExclusion.Add(DualWieldExclusionOriginal[i]);
                 }
-                for (int i = 0; i < classTree.dualWieldExclusionCertainItems.Count; i++)
+                for(int i = 0; i < classTree.dualWieldExclusionCertainItems.Count; i++)
                 {
-                    if (DualWieldExclusion.Contains(classTree.dualWieldExclusionCertainItems[i]))
+                    if(DualWieldExclusion.Contains(classTree.dualWieldExclusionCertainItems[i]))
                     {
                         continue;
                     }
@@ -503,7 +504,7 @@ namespace TribeClasses
 
         internal bool UseSuper()
         {
-            if (canUseSuper)
+            if(canUseSuper)
             {
                 Super super = new(GetSuper());
                 super.SetOwner();
@@ -518,7 +519,7 @@ namespace TribeClasses
         }
         internal bool HaveAnySuper()
         {
-            if (supers != null && supers.Count > 0)
+            if(supers != null && supers.Count > 0)
             {
                 return true;
             }
@@ -529,14 +530,14 @@ namespace TribeClasses
         }
         internal bool HaveOwnSuper()
         {
-            if (supers == null || supers.Count == 0)
+            if(supers == null || supers.Count == 0)
             {
                 return false;
             }
 
-            for (int i = 0; i < supers.Count; i++)
+            for(int i = 0; i < supers.Count; i++)
             {
-                if (supers[i].owner == ZNet.instance.GetUID())
+                if(supers[i].owner == ZNet.instance.GetUID())
                 {
                     return true;
                 }
@@ -546,7 +547,7 @@ namespace TribeClasses
         }
         internal Super.SuperData GetSuper(string supersName = "local")
         {
-            if (supersName == "local")
+            if(supersName == "local")
             {
                 supersName = GetClass();
             }
@@ -559,7 +560,7 @@ namespace TribeClasses
             List<PlayerReference> playerReferences = API.GroupPlayers();
             GetPlayersInRange(m_localPlayer.transform.position, super.data.range, playersInRage);
 
-            for (int i = 0; i < Math.Min(playerReferences.Count, playersInRage.Count); i++)
+            for(int i = 0; i < Math.Min(playerReferences.Count, playersInRage.Count); i++)
             {
                 PlayerReference plInR = new()
                 {
@@ -567,9 +568,9 @@ namespace TribeClasses
                     peerId = playersInRage[i].GetPlayerID()
                 };
 
-                for (int ii = 0; ii < playerReferences.Count; ii++)
+                for(int ii = 0; ii < playerReferences.Count; ii++)
                 {
-                    if (playerReferences[ii].name == plInR.name && playerReferences[ii].name != m_localPlayer.GetPlayerName())
+                    if(playerReferences[ii].name == plInR.name && playerReferences[ii].name != m_localPlayer.GetPlayerName())
                     {
                         playersInRage[i].m_nview.InvokeRPC("ApplySuper", super.data.name);
                     }
